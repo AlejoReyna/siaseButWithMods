@@ -1,54 +1,63 @@
-# Arquitectura
+# Cómo se inyecta la extensión
 
-Tres vistas de cómo funciona Oh My SIASE. Solo incluyen código activo (registrado en `manifest.json` o importado por un script activo).
+Tres vistas de cómo el código de Oh My SIASE llega al navegador y se monta sobre el portal. Basadas en `manifest.json` y en el build de CRXJS (`dist/`).
 
-## 1. Dónde se inyecta
+## 1. Secuencia de carga
 
-Qué script corre en cada parte del portal SIASE.
+Qué pasa desde que el estudiante abre SIASE hasta que ve la interfaz nueva.
 
 ```mermaid
-flowchart TB
-  B([Navegador]) --> F["SIASE · default.htm<br/>frameset-injector"]
-  F --> T["top<br/>top-frame"]
-  F --> L["left<br/>left-frame · SmartSidebar"]
-  F --> C["center<br/>center-frame · center-ui"]
-  C --> R["router<br/>kardex · horario · calificaciones<br/>datos · situación · inscripción"]
-  C --> S["service-page<br/>carrera · créditos · documentos"]
-  C --> P["receipt-page · gym-reservation-page"]
-  N([Nexus]) --> X["nexus-session-capture"]
+sequenceDiagram
+  participant E as Estudiante
+  participant N as Navegador
+  participant X as Extensión
+  E->>N: Abre default.htm
+  N->>X: ¿Hay content scripts para esta URL?
+  X-->>N: frameset-injector · document_start · solo frame raíz
+  Note over N: Captura parámetros de sesión
+  N->>N: Carga frames top · left · center
+  X-->>N: CSS + loader en cada frame · document_idle
+  N->>X: El loader pide el módulo real con import()
+  X-->>N: Módulo desde chrome-extension://
+  Note over N: enhancementsEnabled() → mejora el DOM
 ```
 
-## 2. Cómo fluyen los datos
+## 2. Del manifest a cada frame
 
-Del HTML de SIASE a lo que ve el estudiante.
+Qué script y qué CSS se inyecta según la URL que carga cada frame.
 
 ```mermaid
 flowchart LR
-  H["HTML de SIASE"] --> P["parsers<br/>src/utils/parser"]
-  P --> ST[("chrome.storage<br/>gradeSnapshot · kardexSnapshot<br/>scheduleSlots")]
-  ST --> D["Dashboard<br/>center-ui"]
-  ST --> U["Popup"]
-  D -. "fetch con sesión" .-> H
-  P -- "REFRESH_GRADES" --> SW["Service worker<br/>grade-monitor"]
-  SW --> NT["Notificaciones"]
-  A["Alarma · 30 min"] --> SW
+  M["manifest.json<br/>content_scripts"]
+  M --> R["default.htm<br/>frameset-injector"]
+  M --> T["maintop.htm<br/>top-frame + top.css"]
+  M --> L["mainleftdin01.htm<br/>left-frame + left.css"]
+  M --> C["maincenter.htm<br/>center-frame + center-v2.css"]
+  M --> P["kardex · horario · calificaciones…<br/>router + center-v2.css"]
+  M --> S["carrera · créditos · documentos<br/>service-page + service-pages-v2.css"]
+  M --> Q["recibos · gimnasio<br/>receipt-page · gym-reservation-page"]
+  M --> NX["plataformanexus.uanl.mx<br/>nexus-session-capture"]
 ```
 
-## 3. Cómo está organizado el código
+## 3. Dónde vive cada pieza
 
-Capas del repositorio, de la configuración a los tipos.
+Los contextos del navegador y cómo se comunican.
 
 ```mermaid
 flowchart TB
-  M["manifest.json"] --> E["Entradas<br/>src/content/*-frame.ts · router · service-page"]
-  M --> BG["src/background"]
-  M --> UI["src/popup · src/historia"]
-  E --> PG["src/content/pages"]
-  E --> CSS["src/content/styles"]
-  E --> RX
-  UI --> RX["components · hooks · store"]
-  PG --> UT["src/utils<br/>parser · storage · siase-url"]
-  BG --> UT
-  RX --> UT
-  UT --> TY["src/types"]
+  subgraph TAB["Pestaña de SIASE"]
+    direction LR
+    PJ["JS original<br/>de SIASE"] --- DOM(["DOM del frame"])
+    CS["Content scripts<br/>mundo aislado"] --> DOM
+    CS --> SH["Shadow DOM<br/>sidebar React + shadow.css"]
+  end
+  subgraph EXT["Extensión"]
+    SW["Service worker"]
+    ST[("chrome.storage")]
+    WR["web_accessible_resources<br/>módulos · CSS · íconos"]
+  end
+  WR -- "import()" --> CS
+  CS <-- "chrome.runtime" --> SW
+  CS <--> ST
+  SW <--> ST
 ```
