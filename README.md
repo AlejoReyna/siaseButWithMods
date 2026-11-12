@@ -54,4 +54,4 @@ npm install
 npm run dev
 ```
 
-<sub>[Referencia técnica](./DEVELOPMENT.md) · [Cómo contribuir](./CONTRIBUTING.md) · [Mapa del portal SIASE](./docs/siase-ui-rebuild/README.md)</sub>
+<sub>[Arquitectura](./docs/ARCHITECTURE.md) · [Referencia técnica](./DEVELOPMENT.md) · [Cómo contribuir](./CONTRIBUTING.md) · [Mapa del portal SIASE](./docs/siase-ui-rebuild/README.md)</sub>

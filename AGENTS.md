@@ -70,6 +70,7 @@ Antes de dar una tarea por terminada corre `npm test`, `npm run lint` y `npm run
 
 | Archivo                                                     | Contenido                                                              |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)              | Diagramas de inyección, flujo de datos y capas del código              |
 | [DEVELOPMENT.md](./DEVELOPMENT.md)                          | Referencia técnica y bitácora del proyecto                            |
 | [docs/siase-ui-rebuild/](./docs/siase-ui-rebuild/README.md) | Mapa de páginas, endpoints y DOM del portal SIASE                      |
 | `.agents/context/notes/eselcarrera-reference.md`            | Referencia de `eselcarrera.htm` y patrones de subpáginas               |
