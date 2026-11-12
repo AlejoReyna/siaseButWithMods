@@ -51,6 +51,16 @@ Carga la extensión desde `brave://extensions` o `chrome://extensions` con **Car
 
 Para más detalle técnico consulta [DEVELOPMENT.md](./DEVELOPMENT.md).
 
+## Trabajar con IA
+
+El repo incluye contexto para agentes de IA:
+
+- [`AGENTS.md`](./AGENTS.md): instrucciones generales (lo leen Codex, Cursor, Copilot, Gemini CLI y otros). `CLAUDE.md` lo importa para Claude Code.
+- `.agents/skills/`: recetas paso a paso (mejorar una página de SIASE, escribir parsers y pruebas). `.claude/skills/` apunta a ellas con symlinks.
+- `.agents/context/`: prompts y notas de sesiones anteriores.
+
+Si usas IA, revisa lo que genera: tú eres responsable del PR, sobre todo de que no incluya datos personales.
+
 ## Ramas y commits
 
 - Crea tu rama desde `main` con un prefijo según el tipo de cambio:
