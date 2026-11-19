@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cinco propuestas de interfaz | Oh My SIASE</title>
+<link rel="stylesheet" href="shared/kit.css">
+<style>
+:root { --bg: #f4f6fa; --ink: #121c33; --ink-2: #4a5570; --line: #cfd6e3; --accent: #1d4c9c; --focus: #b45309; }
+main { max-width: 980px; margin: 0 auto; padding: clamp(28px, 6vw, 64px) var(--pad) 80px; }
+h1 { font-size: clamp(1.8rem, 1.2rem + 2.6vw, 2.8rem); line-height: 1.1; letter-spacing: -0.02em; max-width: 20ch; }
+.lead { color: var(--ink-2); max-width: 64ch; margin-top: 12px; font-size: 1.05rem; }
+.list { margin-top: 36px; border-top: 2px solid var(--ink); }
+.list li { border-bottom: 1px solid var(--line); }
+.item { display: grid; grid-template-columns: 148px minmax(0, 1fr) auto; gap: 8px 24px; align-items: center; padding: 20px 6px; text-decoration: none; }
+.item:hover { background: #e7edf8; }
+.item:hover h2 { text-decoration: underline; text-decoration-thickness: 2px; }
+.item h2 { font-size: 1.35rem; line-height: 1.2; }
+.item p { color: var(--ink-2); margin-top: 2px; max-width: 58ch; }
+.item .n { color: var(--ink-2); font-size: .9rem; font-weight: 600; }
+.item .go { color: var(--accent); }
+/* Miniatura esquemática de cada propuesta: muestra su estructura, no su aspecto final */
+.thumb { width: 148px; height: 96px; border: 1.5px solid var(--ink); border-radius: 8px; background: #fff; position: relative; overflow: hidden; }
+.thumb i { position: absolute; background: var(--ink); border-radius: 2px; }
+.thumb i.soft { background: #c3cde0; }
+.thumb i.hot { background: #b8860b; }
+@media (max-width: 640px) { .item { grid-template-columns: 1fr auto; } .thumb { display: none; } }
+.note { margin-top: 32px; padding: 14px 16px; border-radius: 10px; background: #e7ebf3; color: var(--ink-2); max-width: 74ch; }
+.note b { color: var(--ink); }
+.note p + p { margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Cinco propuestas de interfaz para Oh My SIASE</h1>
+  <p class="lead">Cada prototipo muestra el portal completo con una forma distinta de organizarlo. Todos usan los mismos datos ficticios, así que la diferencia que ves es la navegación. El análisis está en <a href="../18-ui-proposals.md">18-ui-proposals.md</a>.</p>
+
+  <ol class="list">
+    <li><a class="item" href="mi-semestre/index.html">
+      <span class="thumb" aria-hidden="true"><i style="left:8px;right:8px;top:10px;height:8px"></i><i class="hot" style="left:104px;top:6px;width:8px;height:16px"></i><i class="soft" style="left:14px;top:34px;width:2px;height:54px"></i><i class="soft" style="left:24px;top:36px;width:70px;height:10px"></i><i class="hot" style="left:24px;top:52px;width:70px;height:10px"></i><i class="soft" style="left:24px;top:68px;width:70px;height:10px"></i><i class="soft" style="left:104px;top:36px;width:34px;height:42px"></i></span>
+      <span><span class="n">Propuesta 1</span><h2>Mi Semestre</h2><p>Todo se ordena por fecha: qué toca hoy, qué vence esta semana y qué viene en el semestre.</p></span>
+      <span class="go">Abrir</span></a></li>
+    <li><a class="item" href="paso-a-paso/index.html">
+      <span class="thumb" aria-hidden="true"><i style="left:34px;top:10px;width:64px;height:9px"></i><i class="soft" style="left:34px;top:30px;width:80px;height:2px"></i><i style="left:34px;top:38px;width:10px;height:10px;border-radius:50%"></i><i class="soft" style="left:50px;top:40px;width:60px;height:6px"></i><i style="left:34px;top:56px;width:10px;height:10px;border-radius:50%"></i><i class="soft" style="left:50px;top:58px;width:60px;height:6px"></i><i style="left:34px;top:74px;width:10px;height:10px;border-radius:50%"></i><i class="soft" style="left:50px;top:76px;width:60px;height:6px"></i></span>
+      <span><span class="n">Propuesta 2</span><h2>Paso a Paso</h2><p>El inicio pregunta qué quieres hacer, en lenguaje llano, y una guía te lleva hasta la página correcta.</p></span>
+      <span class="go">Abrir</span></a></li>
+    <li><a class="item" href="tablero-vivo/index.html">
+      <span class="thumb" aria-hidden="true"><i style="left:0;top:0;width:30px;bottom:0;border-radius:0"></i><i class="soft" style="left:38px;top:10px;width:62px;height:34px"></i><i class="soft" style="left:106px;top:10px;width:34px;height:34px"></i><i class="hot" style="left:38px;top:50px;width:30px;height:36px"></i><i class="soft" style="left:74px;top:50px;width:30px;height:36px"></i><i class="soft" style="left:110px;top:50px;width:30px;height:36px"></i></span>
+      <span><span class="n">Propuesta 3</span><h2>Tablero Vivo</h2><p>Cada área de SIASE es un widget que muestra su dato más importante, con una barra lateral siempre visible.</p></span>
+      <span class="go">Abrir</span></a></li>
+    <li><a class="item" href="busca-y-listo/index.html">
+      <span class="thumb" aria-hidden="true"><i style="left:14px;right:14px;top:10px;height:16px;background:#fff;border:2px solid #121c33;border-radius:6px"></i><i class="hot" style="left:14px;right:14px;top:32px;height:14px"></i><i class="soft" style="left:14px;top:54px;width:34px;height:4px"></i><i class="soft" style="left:14px;top:62px;width:34px;height:4px"></i><i class="soft" style="left:14px;top:70px;width:34px;height:4px"></i><i class="soft" style="left:57px;top:54px;width:34px;height:4px"></i><i class="soft" style="left:57px;top:62px;width:34px;height:4px"></i><i class="soft" style="left:57px;top:70px;width:34px;height:4px"></i><i class="soft" style="left:100px;top:54px;width:34px;height:4px"></i><i class="soft" style="left:100px;top:62px;width:34px;height:4px"></i><i class="soft" style="left:100px;top:70px;width:34px;height:4px"></i></span>
+      <span><span class="n">Propuesta 4</span><h2>Busca y Listo</h2><p>Un buscador que responde con el dato o la página, y debajo el directorio completo de la A a la Z.</p></span>
+      <span class="go">Abrir</span></a></li>
+    <li><a class="item" href="siase-de-bolsillo/index.html">
+      <span class="thumb" aria-hidden="true"><i class="soft" style="left:44px;top:8px;width:60px;height:22px;border-radius:6px"></i><i class="soft" style="left:44px;top:36px;width:60px;height:8px"></i><i class="soft" style="left:44px;top:48px;width:60px;height:8px"></i><i class="soft" style="left:44px;top:60px;width:60px;height:8px"></i><i style="left:40px;top:78px;width:68px;height:2px"></i><i class="hot" style="left:46px;top:84px;width:8px;height:8px"></i><i style="left:58px;top:84px;width:8px;height:8px"></i><i style="left:70px;top:84px;width:8px;height:8px"></i><i style="left:82px;top:84px;width:8px;height:8px"></i><i style="left:94px;top:84px;width:8px;height:8px"></i></span>
+      <span><span class="n">Propuesta 5</span><h2>SIASE de Bolsillo</h2><p>Cinco pestañas fijas como en una app de banco: Inicio, Estudios, Pagos, Trámites y Yo.</p></span>
+      <span class="go">Abrir</span></a></li>
+  </ol>
+
+  <div class="note">
+    <p><b>Cómo revisarlos.</b> Abre cada uno con doble clic; no necesitan servidor ni internet. Prueba en una ventana angosta (unos 375 px) y con el teclado. La franja oscura de arriba cambia entre Estudiante y Docente y agranda el texto.</p>
+    <p><b>Qué es real y qué no.</b> Los nombres, matrículas, materias, calificaciones, montos y fechas son ficticios. Las 68 páginas del inventario de SIASE son alcanzables en cada propuesta. Las pantallas de docente son una hipótesis: el repositorio solo documenta el portal de estudiantes.</p>
+  </div>
+</main>
+</body>
+</html>

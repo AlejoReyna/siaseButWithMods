@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablero Vivo | Oh My SIASE</title>
+<link rel="stylesheet" href="../shared/kit.css">
+<style>
+/* Propuesta 3: Tablero Vivo. Cada área de SIASE es un widget que muestra su dato más importante. */
+:root {
+  --bg: #eceff4; --surface: #ffffff; --surface-2: #e9edf3;
+  --ink: #0f2447; --ink-2: #4c5870; --line: #d2d8e2;
+  --accent: #174a8f; --accent-soft: #e2ebf8; --focus: #a66f00;
+  --navy: #0f2447; --gold: #f0bd3b;
+  --radius: 14px;
+  --display: Optima, Candara, "Segoe UI", system-ui, sans-serif;
+}
+body { display: grid; grid-template-columns: 248px minmax(0, 1fr); grid-template-rows: auto 1fr; min-height: 100vh; }
+#chrome-bar { grid-column: 1 / -1; }
+.tv-side { background: var(--navy); color: #dfe6f3; padding: 18px 12px; display: flex; flex-direction: column; gap: 4px; }
+.tv-side :focus-visible { outline-color: var(--gold); }
+.tv-logo { font-family: var(--display); font-size: 1.3rem; font-weight: 700; color: #fff; text-decoration: none; padding: 4px 10px 14px; display: flex; align-items: center; gap: 8px; }
+.tv-logo i { width: 10px; height: 26px; border-radius: 3px; background: var(--gold); }
+.tv-side nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.tv-side nav a, .tv-out { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: 9px; text-decoration: none; color: inherit; font-weight: 500; border: 0; background: none; width: 100%; text-align: left; }
+.tv-side nav a:hover, .tv-out:hover { background: rgba(255, 255, 255, .09); color: #fff; }
+.tv-side nav a[aria-current="page"] { background: #fff; color: var(--navy); font-weight: 700; }
+.tv-side nav a em { margin-left: auto; font-style: normal; font-size: .78rem; font-weight: 700; min-width: 22px; text-align: center; padding: 1px 6px; border-radius: 999px; background: var(--gold); color: #2b1d00; }
+.tv-main { min-width: 0; }
+.tv-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px var(--pad); }
+.tv-search { flex: 1; min-width: 200px; max-width: 420px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; }
+.tv-search:focus-within { border-color: var(--accent); outline: 3px solid var(--focus); outline-offset: 2px; }
+.tv-search input { flex: 1; min-width: 0; min-height: 42px; border: 0; background: none; outline: 0; }
+.tv-who { margin-left: auto; display: flex; align-items: center; gap: 10px; text-decoration: none; min-height: 44px; }
+.tv-who .k-avatar { width: 38px; height: 38px; font-size: .85rem; background: var(--navy); }
+.tv-who > span:last-child { display: flex; flex-direction: column; line-height: 1.2; font-size: .86rem; }
+.tv-who small { color: var(--ink-2); }
+main { padding: 6px var(--pad) 72px; max-width: 1240px; }
+
+/* Cuadrícula de widgets */
+.tv-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+.tv-w { grid-column: span 4; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tv-w.w8 { grid-column: span 8; } .tv-w.w6 { grid-column: span 6; } .tv-w.w3 { grid-column: span 3; } .tv-w.w5 { grid-column: span 5; } .tv-w.w7 { grid-column: span 7; }
+.tv-w.is-alert { border-color: var(--bad); box-shadow: inset 0 4px 0 var(--bad); }
+.tv-w h2 { font-size: .95rem; font-weight: 600; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.tv-w h2 a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; min-height: 32px; }
+.tv-w h2 a:hover { color: var(--accent); text-decoration: underline; }
+.tv-big { font-family: var(--display); font-size: 2.1rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tv-big small { font: 400 .95rem var(--font); color: var(--ink-2); }
+.tv-sub { color: var(--ink-2); font-size: .9rem; }
+.tv-w .k-badge { align-self: flex-start; flex: none; white-space: normal; }
+.tv-w .tv-go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; min-height: 36px; align-self: flex-start; }
+.tv-w .tv-go .ic { width: 1em; height: 1em; }
+@media (max-width: 1080px) { .tv-w, .tv-w.w3, .tv-w.w5, .tv-w.w7 { grid-column: span 6; } .tv-w.w8 { grid-column: span 12; } }
+@media (max-width: 620px) { .tv-w, .tv-w.w3, .tv-w.w5, .tv-w.w6, .tv-w.w7, .tv-w.w8 { grid-column: span 12; } }
+
+/* Día de hoy: pista de 7:00 a 12:00 */
+.tv-day { position: relative; height: 54px; border-radius: 8px; background: var(--surface-2); margin-top: 22px; }
+.tv-day b { position: absolute; top: 5px; bottom: 5px; display: grid; place-items: center; border-radius: 6px; background: var(--accent); color: #fff; font-size: .82rem; overflow: hidden; }
+.tv-day b.is-past { background: #5f7396; }
+.tv-day i { position: absolute; top: -18px; bottom: -4px; width: 2px; background: var(--bad); }
+.tv-day i::after { content: "Ahora 8:10"; position: absolute; top: -3px; left: 6px; font-style: normal; font-size: .76rem; font-weight: 700; color: var(--bad); white-space: nowrap; }
+.tv-hours { display: flex; justify-content: space-between; font-size: .76rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tv-list li { display: flex; gap: 10px; align-items: baseline; padding: 5px 0; border-top: 1px solid var(--line); font-size: .92rem; }
+.tv-list li:first-child { border-top: 0; }
+.tv-list time { width: 86px; flex: none; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tv-list span { flex: 1; min-width: 0; }
+.tv-two { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 620px) { .tv-two { grid-template-columns: 1fr; } }
+
+/* Semana en miniatura */
+.tv-week { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.tv-week span { font-size: .72rem; text-align: center; color: var(--ink-2); }
+.tv-week span.is-today { color: var(--ink); font-weight: 700; }
+.tv-week i { height: 12px; border-radius: 3px; background: var(--surface-2); }
+.tv-week i.on { background: var(--accent); }
+.tv-week i.today { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* Anillo y barras */
+.tv-ring { display: flex; align-items: center; gap: 16px; }
+.tv-ring svg { width: 104px; height: 104px; flex: none; }
+.tv-ring circle { fill: none; stroke-width: 11; }
+.tv-ring .trk { stroke: var(--surface-2); }
+.tv-ring .val { stroke: var(--accent); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.tv-ring text { font: 700 22px var(--display); fill: var(--ink); text-anchor: middle; }
+.tv-split { display: flex; gap: 2px; height: 14px; }
+.tv-split i { border-radius: 4px; }
+.tv-split .paid { background: var(--good); }
+.tv-split .due { background: var(--bad); background-image: repeating-linear-gradient(135deg, transparent 0 4px, rgba(255, 255, 255, .35) 4px 6px); }
+.tv-key { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .84rem; color: var(--ink-2); }
+.tv-key span { display: inline-flex; align-items: center; gap: 6px; }
+.tv-key i { width: 10px; height: 10px; border-radius: 3px; }
+.tv-segs { display: flex; gap: 4px; }
+.tv-segs i { flex: 1; height: 12px; border-radius: 4px; background: var(--surface-2); }
+.tv-segs i.on { background: var(--accent); }
+.tv-segs i.bad { background: var(--bad); }
+.tv-mini { display: grid; gap: 10px; }
+.tv-mini div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: .9rem; }
+.tv-mini .k-bar { grid-column: 1 / -1; margin: 0; }
+
+/* Móvil: la barra lateral se vuelve una fila de áreas siempre visible */
+@media (max-width: 900px) {
+  body { display: block; }
+  .tv-side { padding: 8px 10px; }
+  .tv-logo { padding: 2px 6px 8px; font-size: 1.1rem; }
+  .tv-side nav { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  .tv-side nav a { flex-direction: column; justify-content: center; gap: 2px; flex: none; width: 84px; min-height: 64px; padding: 6px 4px; font-size: .74rem; line-height: 1.15; text-align: center; position: relative; }
+  .tv-side nav a em { position: absolute; top: 2px; right: 8px; margin: 0; }
+  .tv-out { display: none; }
+  .tv-who > span:last-child small { display: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<div id="chrome-bar"></div>
+<aside class="tv-side" id="side"></aside>
+<div class="tv-main">
+  <div class="tv-top" id="top"></div>
+  <main id="view"></main>
+</div>
+
+<script src="../shared/data.js"></script>
+<script src="../shared/kit.js"></script>
+<script>
+(function () {
+  var S = window.SIASE, icon = S.icon, esc = S.esc;
+  var NAME = 'Tablero Vivo';
+  var ALERTS = { pagos: 2, tramites: 1, encuestas: 1 };
+
+  function shell() {
+    var who = S.person(), doc = S.isTeacher();
+    document.getElementById('chrome-bar').innerHTML = S.protoBar(3, NAME);
+    var links = '<a href="#/" data-nav="/">' + icon('grid') + 'Inicio</a>';
+    if (doc) {
+      links += S.teacherPages.map(function (p) { return '<a href="#/p/' + p.id + '" data-nav="/p/' + p.id + '">' + icon(p.icon) + esc(p.label.replace(' y listas de clase', '').replace('Captura de calificaciones', 'Captura').replace('Seguimiento a tutorías', 'Tutorías').replace('Expediente para estímulos', 'Expediente')) + (p.id === 'd-captura' ? '<em aria-label="2 grupos pendientes">2</em>' : '') + '</a>'; }).join('') +
+        '<a href="#/a/cuenta" data-nav="/a/cuenta">' + icon('user') + 'Mi cuenta</a>';
+    } else {
+      links += S.areas.map(function (a) { return '<a href="#/a/' + a.id + '" data-nav="/a/' + a.id + '">' + icon(a.icon) + esc(a.label) + (ALERTS[a.id] ? '<em aria-label="' + ALERTS[a.id] + ' pendientes">' + ALERTS[a.id] + '</em>' : '') + '</a>'; }).join('');
+    }
+    document.getElementById('side').innerHTML = '<a class="tv-logo" href="#/"><i></i>Oh My SIASE</a><nav aria-label="Áreas de SIASE">' + links + '</nav>' +
+      '<a class="tv-out" href="#/p/salir">' + icon('logout') + 'Salir</a>';
+    document.getElementById('top').innerHTML =
+      '<form class="tv-search" role="search" id="tv-form">' + icon('search') + '<label class="sr-only" for="tv-q">Buscar en SIASE</label><input id="tv-q" type="search" placeholder="Buscar una página de SIASE" autocomplete="off"></form>' +
+      '<a class="tv-who" href="' + (doc ? '#/p/d-datos' : '#/p/carrera') + '"><span class="k-avatar" aria-hidden="true">' + who.initials + '</span><span><b>' + esc(who.name) + '</b><small>' + (doc ? 'Docente, ' + who.facultyShort : esc(who.program) + ', cambiar') + '</small></span></a>';
+    document.getElementById('tv-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      location.hash = '#/buscar?' + encodeURIComponent(document.getElementById('tv-q').value);
+    });
+  }
+
+  function W(cls, ic, title, href, body, go) {
+    return '<section class="tv-w ' + cls + '"><h2><a href="' + href + '">' + icon(ic) + esc(title) + '</a></h2>' + body + (go ? '<a class="tv-go" href="' + href + '">' + go + icon('chevron') + '</a>' : '') + '</section>';
+  }
+  function ring(pct) {
+    var c = 2 * Math.PI * 42;
+    return '<svg viewBox="0 0 104 104" role="img" aria-label="' + pct + ' por ciento de avance"><circle class="trk" cx="52" cy="52" r="42"/><circle class="val" cx="52" cy="52" r="42" stroke-dasharray="' + (c * pct / 100).toFixed(1) + ' ' + c.toFixed(1) + '"/><text x="52" y="60">' + pct + '%</text></svg>';
+  }
+  function dayTrack(list, nowPct) {
+    var total = 300; /* minutos de 7:00 a 12:00 */
+    var mins = [0, 50, 100, 150, 200, 250, 300];
+    return '<div class="tv-day" aria-hidden="true">' + list.map(function (c, i) {
+      var l = mins[c.start] / total * 100, w = (mins[c.start + c.len] - mins[c.start]) / total * 100;
+      return '<b class="' + (i === 0 ? 'is-past' : '') + '" style="left:calc(' + l + '% + 2px);width:calc(' + w + '% - 4px)">' + esc(c.course ? 'Gpo. ' + c.group : c.id) + '</b>';
+    }).join('') + '<i style="left:' + nowPct + '%"></i></div><div class="tv-hours" aria-hidden="true"><span>7:00</span><span>8:40</span><span>10:20</span><span>12:00</span></div>';
+  }
+  function miniWeek(list, today) {
+    var html = '<div class="tv-week" aria-hidden="true">' + S.days.map(function (d) { return '<span class="' + (d.id === today ? 'is-today' : '') + '">' + d.short + '</span>'; }).join('');
+    for (var h = 0; h < 6; h++) S.days.forEach(function (d) {
+      var on = list.some(function (c) { return c.days.indexOf(d.id) >= 0 && h >= c.start && h < c.start + c.len; });
+      html += '<i class="' + (on ? 'on' : '') + (d.id === today ? ' today' : '') + '"></i>';
+    });
+    return html + '</div>';
+  }
+
+  function home() {
+    var st = S.student, t = st.today, pct = Math.round(st.credits.done / st.credits.total * 100);
+    var todays = S.classesOn(t.day);
+    var hoy = '<div class="tv-two"><div>' + dayTrack(todays, 23.3) +
+      '<ul class="tv-list" style="margin-top:8px">' + todays.map(function (c, i) { return '<li><time>' + S.hours[c.start] + '–' + S.endHour(c) + '</time><span><b>' + esc(c.name) + '</b>, salón ' + c.room + '</span>' + (i === 1 ? S.badge('warn', 'Ahora') : '') + '</li>'; }).join('') + '</ul></div>' +
+      '<div><p class="tv-sub" style="margin-bottom:8px">Tu semana: 19 horas de clase</p>' + miniWeek(S.courses, t.day) + '</div></div>';
+    return { title: 'Inicio', html: '<header class="k-head"><h1 tabindex="-1">Hola, ' + st.first + '</h1><p class="k-lead">' + t.label + ', semana ' + t.week + ' de ' + t.weeks + '. Hay 4 cosas que piden tu atención; están marcadas en rojo.</p></header><div class="tv-grid">' +
+      W('w8', 'calendar', 'Hoy en clases', '#/p/horario', hoy, 'Ver horario completo') +
+      W('', 'ring', 'Avance de carrera', '#/a/estudios', '<div class="tv-ring">' + ring(pct) + '<div><p class="tv-big">' + st.average.toFixed(1) + ' <small>promedio</small></p><p class="tv-sub">' + st.credits.done + ' de ' + st.credits.total + ' créditos, ' + st.semester + '.º semestre</p></div></div>', 'Ver kardex y créditos') +
+      W('is-alert', 'wallet', 'Pagos y becas', '#/a/pagos', '<p class="tv-big">' + S.money(S.owed) + ' <small>por pagar</small></p><div class="tv-split" role="img" aria-label="Pagado 6,580 pesos; por pagar 3,530 pesos"><i class="paid" style="flex:6580"></i><i class="due" style="flex:3530"></i></div><div class="tv-key"><span><i style="background:var(--good)"></i>Pagado ' + S.money(6580) + '</span><span><i style="background:var(--bad)"></i>Por pagar</span></div>' + S.badge('bad', 'Vence el 20 de noviembre, en 4 días'), 'Ver recibos') +
+      W('', 'check', 'Calificaciones', '#/p/calificaciones', '<p class="tv-big">2 <small>de 7 publicadas</small></p><div class="tv-segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div><ul class="tv-list"><li><span>Cultura de Paz</span><b>95</b></li><li><span>Administración de Proyectos</span><b>90</b></li></ul>', 'Ver calificaciones') +
+      W('', 'clipboard', 'Inscripción', '#/a/inscripcion', '<p class="tv-big">59 <small>días</small></p><p class="tv-sub">Te inscribes el jueves 14 de enero a las 10:30.</p>', 'Ver fecha y requisitos') +
+      W('is-alert', 'file', 'Trámites y documentos', '#/a/tramites', '<p class="tv-big">2 <small>de 3 documentos aceptados</small></p><div class="tv-segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="bad"></i></div>' + S.badge('bad', 'Certificado de bachillerato rechazado'), 'Subir documento') +
+      W('is-alert', 'chat', 'Encuestas', '#/a/encuestas', '<p class="tv-big">1 <small>abierta</small></p><p class="tv-sub">Encuesta de tu facultad.</p>' + S.badge('warn', 'Cierra el 27 de noviembre'), 'Contestar') +
+      W('', 'heart', 'Vida universitaria', '#/a/vida', '<div class="tv-mini"><div><span>Eventos AFI este semestre</span><b>5 de 8</b>' + S.bar(5, 8, 'Eventos AFI') + '</div><div><span>Gimnasio</span><b>Sin reservación</b></div></div>', 'Ver actividades') +
+      W('', 'globe', 'English UANL', '#/a/ingles', '<p class="tv-big">4 <small>de 6 niveles</small></p><div class="tv-segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>' + S.badge('warn', 'Pago del EXCI vence el 28 de noviembre'), 'Ver inglés') +
+      W('w8', 'bell', 'Avisos de interés', '#/p/avisos', '<ul class="tv-list">' + S.notices.map(function (n) { return '<li><time>' + n.date.replace(' de noviembre', ' nov') + '</time><span><b>' + esc(n.title) + '</b></span></li>'; }).join('') + '</ul>', 'Leer avisos') +
+      W('w6', 'layers', 'Otros servicios de la UANL', '#/p/carrera', '<ul class="tv-list"><li><span><a href="#/p/correo">Correo universitario</a></span></li><li><span><a href="#/p/nexus">Nexus</a></span></li><li><span><a href="#/p/codice">Códice</a></span></li></ul>', 'Cambiar de carrera') +
+      W('w6', 'user', 'Mi cuenta', '#/a/cuenta', '<ul class="tv-list"><li><span>Credencial digital</span>' + S.badge('good', 'Vigente') + '</li><li><span>Datos personales</span>' + S.badge('info', 'Revísalos este semestre') + '</li><li><span>Sesión de SIASE</span>' + S.badge('good', 'Activa') + '</li></ul>', 'Abrir mi cuenta') +
+      '</div>' };
+  }
+
+  function homeTeacher() {
+    var th = S.teacher, t = S.student.today, cap = th.capture;
+    var todays = S.groups.filter(function (g) { return g.days.indexOf(t.day) >= 0; });
+    return { title: 'Inicio', html: '<header class="k-head"><h1 tabindex="-1">Hola, ' + th.first + '</h1><p class="k-lead">' + t.label + ', semana ' + t.week + ' de ' + t.weeks + '. La captura del ' + cap.name.toLowerCase() + ' cierra en ' + cap.dueIn + ' días.</p></header><div class="tv-grid">' +
+      W('w8', 'calendar', 'Hoy en clases', '#/p/d-horario', '<div class="tv-two"><div>' + dayTrack(todays, 23.3) + '<ul class="tv-list" style="margin-top:8px">' + todays.map(function (g) { return '<li><time>' + S.hours[g.start] + '–' + S.hours[g.start + g.len] + '</time><span><b>' + esc(g.course) + '</b>, grupo ' + g.group + ', salón ' + g.room + '</span></li>'; }).join('') + '</ul></div><div><p class="tv-sub" style="margin-bottom:8px">Tu semana: 8 horas frente a grupo</p>' + miniWeek(S.groups, t.day) + '</div></div>', 'Ver horario completo') +
+      W('is-alert', 'edit', 'Captura de calificaciones', '#/p/d-captura', '<p class="tv-big">59 <small>de 95 capturadas</small></p><div class="tv-mini">' + S.groups.map(function (g) { return '<div><span>' + esc(g.course) + ', gpo. ' + g.group + '</span><b>' + g.captured + ' de ' + g.size + '</b>' + S.bar(g.captured, g.size, 'Capturadas grupo ' + g.group) + '</div>'; }).join('') + '</div>' + S.badge('bad', cap.name + ' cierra el ' + cap.due), 'Capturar') +
+      W('', 'users', 'Mis grupos', '#/p/d-grupos', '<p class="tv-big">95 <small>estudiantes</small></p><p class="tv-sub">3 grupos en ' + th.period + '.</p>', 'Ver listas de clase') +
+      W('', 'chat', 'Tutorías', '#/p/d-tutorias', '<p class="tv-big">19 <small>de 24 sesiones</small></p>' + S.bar(19, 24, 'Sesiones registradas'), 'Registrar sesiones') +
+      W('', 'chat', 'Encuestas', '#/p/d-encuestas', '<p class="tv-big">1 <small>abierta</small></p>' + S.badge('warn', 'Cierra el 27 de noviembre'), 'Contestar') +
+      W('w6', 'file', 'Expediente para estímulos', '#/p/d-expediente', '<p class="tv-big">7 <small>de 9 documentos</small></p>' + S.bar(7, 9, 'Documentos del expediente'), 'Actualizar expediente') +
+      W('w6', 'user', 'Datos y cuenta', '#/a/cuenta', '<ul class="tv-list"><li><span>Datos en SIASE-RH</span>' + S.badge('info', 'Valídalos') + '</li><li><span>Sesión de SIASE</span>' + S.badge('good', 'Activa') + '</li></ul>', 'Abrir mi cuenta') +
+      '</div>' + S.nativeNote({ teacher: true }) };
+  }
+
+  function areaPage(id) {
+    var doc = S.isTeacher();
+    if (doc) {
+      if (id !== 'cuenta') return null;
+      return { title: 'Mi cuenta', html: '<header class="k-head"><h1 tabindex="-1">Mi cuenta</h1><p class="k-lead">Datos, acceso y sesión.</p></header>' + S.rows([S.find('d-datos')].concat(S.teacherAccount.map(S.find)), { primary: 'label' }) };
+    }
+    var a = S.areas.filter(function (x) { return x.id === id; })[0];
+    if (!a) return null;
+    var list = S.pages.filter(function (p) { return p.area === id; });
+    var top = '';
+    if (id === 'pagos') top = S.paymentsOverview() + '<h2 class="k-block" style="font-size:1.15rem;margin-bottom:10px">Todas las páginas de pagos, Tesorería y becas</h2>';
+    if (id === 'estudios') top = '<div class="k-stats" style="margin-bottom:18px">' + S.stat('Promedio general', S.student.average.toFixed(1), 'de 100') + S.stat('Créditos', '96 de 220', S.bar(96, 220, 'Créditos aprobados')) + S.stat('Calificaciones publicadas', '2 de 7', S.bar(2, 7, 'Publicadas')) + '</div>';
+    if (id === 'inscripcion') top = '<div class="k-stats" style="margin-bottom:18px">' + S.stat('Tu inscripción', '14 de enero', 'a las 10:30, faltan 59 días') + '</div>';
+    if (id === 'tramites') top = '<div class="k-stats" style="margin-bottom:18px">' + S.stat('Documentos aceptados', '2 de 3', S.bar(2, 3, 'Documentos aceptados')) + '</div>';
+    if (id === 'cuenta') list = [S.byId.avisos].concat(list);
+    return { title: a.label, html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], [a.label]]) + '<h1 tabindex="-1">' + esc(a.label) + '</h1><p class="k-lead">' + esc(a.blurb) + '. ' + list.length + ' páginas de SIASE.</p></header>' + top + S.rows(list, { primary: 'label' }) };
+  }
+
+  function searchPage(q) {
+    var res = S.search(q);
+    return { title: 'Buscar', html: '<header class="k-head"><h1 tabindex="-1">Resultados para "' + esc(q) + '"</h1><p class="k-lead" role="status">' + res.length + ' páginas encontradas.</p></header>' +
+      (res.length ? S.rows(res, { primary: 'label' }) : '<p class="k-empty">Nada coincide. Prueba con otra palabra o revisa las áreas de la barra lateral.</p>') };
+  }
+
+  function resolve(path, query) {
+    var doc = S.isTeacher(), m;
+    if (path === '/') return doc ? homeTeacher() : home();
+    if (path === '/buscar') return searchPage(query);
+    if ((m = path.match(/^\/a\/([\w-]+)$/))) return areaPage(m[1]);
+    if ((m = path.match(/^\/d\/lista\/(\w+)$/)) && doc) {
+      var r = S.rosterView(m[1]);
+      return { title: r.title, html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Mis grupos', '#/p/d-grupos'], ['Lista']]) + '<h1 tabindex="-1">' + esc(r.title) + '</h1></header>' + r.html + S.nativeNote({ teacher: true }) };
+    }
+    if ((m = path.match(/^\/p\/([\w-]+)$/))) {
+      var p = S.find(m[1]);
+      if (!p || S.pagesFor().indexOf(p) < 0) return null;
+      var a = S.areas.filter(function (x) { return x.id === p.area; })[0];
+      var crumb = p.teacher ? S.crumbs([['Inicio', '#/'], [p.label]]) : a ? S.crumbs([['Inicio', '#/'], [a.label, '#/a/' + a.id], [p.label]]) : S.crumbs([['Inicio', '#/'], [p.label]]);
+      return S.renderPage(p.id, { before: crumb });
+    }
+    return null;
+  }
+
+  function after(path) {
+    var key = path;
+    var m = path.match(/^\/p\/([\w-]+)$/);
+    if (m) { var p = S.find(m[1]); if (p && !p.teacher) key = p.area === 'inicio' ? '/' : '/a/' + (S.isTeacher() ? 'cuenta' : p.area); }
+    if (/^\/d\//.test(path)) key = '/p/d-grupos';
+    document.querySelectorAll('.tv-side nav a').forEach(function (a) {
+      if (a.getAttribute('data-nav') === key) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  S.start({ name: NAME + ' (Oh My SIASE)', shell: shell, resolve: resolve, after: after });
+})();
+</script>
+</body>
+</html>

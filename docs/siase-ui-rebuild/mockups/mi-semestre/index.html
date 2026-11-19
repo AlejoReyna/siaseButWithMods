@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Semestre | Oh My SIASE</title>
+<link rel="stylesheet" href="../shared/kit.css">
+<style>
+/* Propuesta 1: Mi Semestre. Todo se ordena por fecha; la regla del semestre es la pieza central. */
+:root {
+  --bg: #f1f4f9; --surface: #ffffff; --surface-2: #e7ecf4;
+  --ink: #14213d; --ink-2: #4a5570; --line: #cfd7e4;
+  --accent: #2c4a9a; --accent-soft: #e3eafa; --focus: #a8730a;
+  --gold: #b07c12; --gold-soft: #fbf0d3;
+  --display: Charter, "Iowan Old Style", "Sitka Text", Cambria, Georgia, serif;
+}
+.ms-top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.ms-top__in { max-width: 1120px; margin: 0 auto; padding: 14px var(--pad) 0; }
+.ms-brand { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ms-brand a.ms-logo { font-family: var(--display); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
+.ms-who { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 999px; min-height: 44px; }
+.ms-who:hover { border-color: var(--accent); }
+.ms-who .k-avatar { width: 34px; height: 34px; font-size: .8rem; }
+.ms-who > span:last-child { display: flex; flex-direction: column; line-height: 1.2; font-size: .85rem; }
+.ms-who small { color: var(--ink-2); }
+
+/* Regla del semestre */
+.ms-ruler { display: block; margin-top: 14px; padding: 8px 0 4px; text-decoration: none; }
+.ms-ruler__cap { display: flex; justify-content: space-between; font-size: .82rem; color: var(--ink-2); }
+.ms-ruler__cap b { color: var(--ink); }
+.ms-ruler__weeks { display: flex; gap: 3px; align-items: flex-end; height: 38px; margin-top: 4px; }
+.ms-ruler__weeks i { position: relative; flex: 1; height: 12px; border-radius: 3px; background: var(--surface-2); border: 1px solid var(--line); }
+.ms-ruler__weeks i.is-past { background: var(--accent); border-color: var(--accent); }
+.ms-ruler__weeks i.is-now { height: 24px; background: var(--gold); border-color: var(--gold); }
+.ms-ruler__weeks i.has-ev::before { content: ""; position: absolute; left: 50%; top: -9px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--ink-2); }
+.ms-ruler__weeks i.has-urgent::before { background: var(--bad); width: 9px; height: 9px; margin-left: -4.5px; top: -11px; }
+.ms-ruler__months { display: flex; font-size: .78rem; color: var(--ink-2); margin-top: 3px; }
+.ms-ruler__months span { flex: 1; }
+.ms-nav { display: flex; gap: 4px; margin-top: 8px; overflow-x: auto; }
+.ms-nav a { display: inline-flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 14px; text-decoration: none; font-weight: 600; color: var(--ink-2); border-bottom: 3px solid transparent; white-space: nowrap; }
+.ms-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--gold); }
+.ms-nav a:hover { color: var(--ink); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 28px var(--pad) 80px; }
+.ms-cols { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr); gap: 36px; align-items: start; }
+@media (max-width: 860px) { .ms-cols { grid-template-columns: 1fr; gap: 28px; } }
+.ms-h2 { font-family: var(--display); font-size: 1.2rem; margin: 28px 0 12px; }
+.ms-h2:first-child { margin-top: 0; }
+
+/* Línea de tiempo */
+.ms-line { position: relative; padding-left: 26px; }
+.ms-line::before { content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+.ms-ev { position: relative; padding: 0 0 14px; }
+.ms-ev::before { content: ""; position: absolute; left: -26px; top: 16px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink-2); }
+.ms-ev.is-done::before { background: var(--ink-2); }
+.ms-ev.is-now::before { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 5px var(--gold-soft); }
+.ms-ev.is-urgent::before { background: var(--bad); border-color: var(--bad); }
+.ms-ev > a, .ms-ev > div { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; min-height: 52px; }
+.ms-ev > a:hover { border-color: var(--accent); }
+.ms-ev.is-now > a { border-color: var(--gold); border-width: 2px; }
+.ms-ev.is-done > a { background: transparent; color: var(--ink-2); }
+.ms-ev time { width: 104px; flex: none; font-size: .88rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ms-ev__tx { flex: 1; min-width: 150px; display: flex; flex-direction: column; }
+.ms-ev__tx small { color: var(--ink-2); }
+@media (max-width: 560px) {
+  .ms-ev time { width: 100%; }
+  .ms-nav a { padding: 0 9px; font-size: .92rem; }
+  .ms-nav a .ic { display: none; }
+}
+.ms-gap { margin: 0 0 14px; padding-left: 4px; color: var(--ink-2); font-size: .88rem; }
+
+.ms-side > section + section { margin-top: 26px; }
+.ms-kpi { display: grid; gap: 8px; }
+.ms-kpi a { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; }
+.ms-kpi a:hover { border-color: var(--accent); }
+.ms-kpi span { color: var(--ink-2); font-size: .88rem; }
+.ms-kpi strong { font-family: var(--display); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.ms-kpi .k-bar { grid-column: 1 / -1; }
+.ms-news li { padding: 10px 0; border-top: 1px solid var(--line); }
+.ms-news small { color: var(--ink-2); display: block; }
+.ms-all { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-weight: 600; color: var(--accent); min-height: 44px; }
+.ms-filter { display: flex; align-items: center; gap: 8px; padding: 0 12px; margin-bottom: 8px; background: var(--surface); border: 1.5px solid var(--ink-2); border-radius: var(--radius); max-width: 460px; }
+.ms-filter input { flex: 1; min-height: 46px; border: 0; background: transparent; outline: 0; }
+.ms-filter:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+.ms-moment { margin-top: 26px; }
+.ms-moment h2 { font-family: var(--display); font-size: 1.2rem; }
+.ms-moment > p { color: var(--ink-2); margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<div id="chrome"></div>
+<main id="view"></main>
+
+<script src="../shared/data.js"></script>
+<script src="../shared/kit.js"></script>
+<script>
+(function () {
+  var S = window.SIASE, icon = S.icon, esc = S.esc;
+  var NAME = 'Mi Semestre';
+
+  function eventsAt(week) { return S.timeline.filter(function (e) { return e.week === week; }); }
+
+  function shell() {
+    var t = S.student.today, who = S.person(), doc = S.isTeacher();
+    var weeks = '';
+    for (var w = 1; w <= t.weeks; w++) {
+      var ev = doc ? [] : eventsAt(w);
+      var cls = w < t.week ? 'is-past' : w === t.week ? 'is-now' : '';
+      if (ev.length && w >= t.week) cls += ev.some(function (e) { return e.state === 'urgente'; }) ? ' has-ev has-urgent' : ' has-ev';
+      if (doc && (w === 16 || w === 19)) cls += w === 16 ? ' has-ev has-urgent' : ' has-ev';
+      weeks += '<i class="' + cls + '"></i>';
+    }
+    document.getElementById('chrome').innerHTML = S.protoBar(1, NAME) +
+      '<header class="ms-top"><div class="ms-top__in">' +
+      '<div class="ms-brand"><a class="ms-logo" href="#/">Oh My SIASE</a>' +
+      '<a class="ms-who" href="' + (doc ? '#/p/d-datos' : '#/p/carrera') + '" title="' + (doc ? 'Mis datos' : 'Cambiar de carrera') + '"><span class="k-avatar" aria-hidden="true">' + who.initials + '</span><span><b>' + esc(who.name) + '</b><small>' + (doc ? 'Docente, ' + who.facultyShort : esc(who.program) + ' (cambiar)') + '</small></span></a></div>' +
+      '<a class="ms-ruler" href="#/semestre" aria-label="Semana ' + t.week + ' de ' + t.weeks + ' del semestre ' + S.student.period + '. Ver el semestre completo.">' +
+      '<span class="ms-ruler__cap"><span><b>' + S.student.period + '</b></span><span>Semana <b>' + t.week + '</b> de ' + t.weeks + '</span></span>' +
+      '<span class="ms-ruler__weeks" aria-hidden="true">' + weeks + '</span>' +
+      '<span class="ms-ruler__months" aria-hidden="true"><span>Ago</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dic</span></span></a>' +
+      '<nav class="ms-nav" aria-label="Secciones">' +
+      '<a href="#/" data-nav="/">' + icon('clock') + 'Hoy</a>' +
+      '<a href="#/semestre" data-nav="/semestre">' + icon('calendar') + 'Mi semestre</a>' +
+      (doc ? '' : '<a href="#/pagos" data-nav="/pagos">' + icon('wallet') + 'Pagos</a>') +
+      '<a href="#/todo" data-nav="/todo">' + icon('list') + 'Todo SIASE</a>' +
+      '</nav></div></header>';
+  }
+
+  function ev(cls, time, title, sub, href, extra) {
+    var inner = '<time>' + time + '</time><span class="ms-ev__tx"><b>' + esc(title) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span>' + (extra || '');
+    return '<li class="ms-ev ' + cls + '">' + (href ? '<a href="' + href + '">' + inner + '</a>' : '<div>' + inner + '</div>') + '</li>';
+  }
+  function stateOf(e) { return e.state === 'hecho' ? 'is-done' : e.state === 'urgente' ? 'is-urgent' : e.state === 'hoy' ? 'is-now' : ''; }
+  function evOf(e) {
+    var p = S.find(e.page);
+    var extra = e.state === 'urgente' ? S.badge('bad', 'Urgente') : e.state === 'hecho' ? S.badge('good', 'Hecho') : '';
+    return ev(stateOf(e), e.date, e.title, p ? p.label : '', '#/p/' + e.page, extra);
+  }
+
+  function home() {
+    var t = S.student.today, st = S.student;
+    var todays = S.classesOn(t.day);
+    var classes = todays.map(function (c, i) {
+      var state = i === 0 ? 'is-done' : i === 1 ? 'is-now' : '';
+      var extra = i === 1 ? S.badge('warn', 'Ahora, termina 8:40') : i === 0 ? S.badge('good', 'Ya pasó') : '';
+      return ev(state, S.hours[c.start] + '–' + S.endHour(c), c.name, 'Salón ' + c.room + ', grupo ' + c.group + ', ' + c.teacher, '#/p/horario', extra);
+    }).join('');
+    var urgent = S.timeline.filter(function (e) { return e.state === 'urgente'; }).map(evOf).join('');
+    var next = S.timeline.filter(function (e) { return e.state === 'pendiente'; }).slice(0, 4).map(evOf).join('');
+    return { title: 'Hoy', html:
+      '<header class="k-head"><h1 tabindex="-1">Hoy, ' + t.label.toLowerCase() + '</h1><p class="k-lead">Hola, ' + st.first + '. Vas en la semana ' + t.week + ' de ' + t.weeks + '. Te quedan 2 clases hoy y 2 pendientes urgentes.</p></header>' +
+      '<div class="ms-cols"><div>' +
+      '<h2 class="ms-h2">Tus clases de hoy</h2><ol class="ms-line">' + classes + '</ol><p class="ms-gap">Después de las 9:30 quedas libre. <a href="#/p/horario">Ver la semana completa</a></p>' +
+      '<h2 class="ms-h2">Te toca esta semana</h2><ol class="ms-line">' + urgent + '</ol>' +
+      '<h2 class="ms-h2">Lo que viene</h2><ol class="ms-line">' + next + '</ol>' +
+      '<a class="ms-all" href="#/semestre">Ver todo el semestre ' + icon('chevron') + '</a>' +
+      '</div><aside class="ms-side">' +
+      '<section><h2 class="ms-h2">Así vas</h2><div class="ms-kpi">' +
+      '<a href="#/p/kardex"><span>Promedio general</span><strong>' + st.average.toFixed(1) + '</strong></a>' +
+      '<a href="#/p/creditos"><span>Créditos aprobados</span><strong>' + st.credits.done + ' de ' + st.credits.total + '</strong>' + S.bar(st.credits.done, st.credits.total, 'Créditos aprobados') + '</a>' +
+      '<a href="#/pagos"><span>Por pagar</span><strong>' + S.money(S.owed) + '</strong></a>' +
+      '<a href="#/p/calificaciones"><span>Calificaciones publicadas</span><strong>2 de 7</strong>' + S.bar(2, 7, 'Calificaciones publicadas') + '</a>' +
+      '</div></section>' +
+      '<section><h2 class="ms-h2">Avisos de la UANL</h2><ul class="ms-news">' + S.notices.map(function (n) { return '<li><a href="#/p/avisos"><b>' + esc(n.title) + '</b></a><small>' + n.date + '</small></li>'; }).join('') + '</ul></section>' +
+      '<section><h2 class="ms-h2">¿Buscas otra cosa?</h2><p class="k-muted">Todas las páginas de SIASE están ordenadas por el momento del semestre en que se usan.</p><a class="ms-all" href="#/todo">Abrir Todo SIASE ' + icon('chevron') + '</a></section>' +
+      '</aside></div>' };
+  }
+
+  function homeTeacher() {
+    var t = S.student.today, th = S.teacher, cap = th.capture;
+    var todays = S.groups.filter(function (g) { return g.days.indexOf(t.day) >= 0; });
+    var classes = todays.map(function (g, i) {
+      return ev(i === 0 ? 'is-done' : '', S.hours[g.start] + '–' + S.hours[g.start + g.len], g.course + ', grupo ' + g.group, 'Salón ' + g.room + ', ' + g.size + ' estudiantes', '#/d/lista/' + g.id, i === 0 ? S.badge('good', 'Ya pasó') : S.badge('info', 'Sigue'));
+    }).join('');
+    var capture = S.groups.map(function (g) {
+      var done = g.captured === g.size;
+      return ev(done ? 'is-done' : 'is-urgent', 'Cierra el ' + cap.due, cap.name + ': ' + g.course + ', grupo ' + g.group, g.captured + ' de ' + g.size + ' calificaciones capturadas', '#/p/d-captura', done ? S.badge('good', 'Completo') : S.badge('bad', 'Faltan ' + (g.size - g.captured)));
+    }).join('');
+    return { title: 'Hoy', html:
+      '<header class="k-head"><h1 tabindex="-1">Hoy, ' + t.label.toLowerCase() + '</h1><p class="k-lead">Hola, ' + th.first + '. Semana ' + t.week + ' de ' + t.weeks + '. La captura del ' + cap.name.toLowerCase() + ' cierra en ' + cap.dueIn + ' días.</p></header>' +
+      '<div class="ms-cols"><div>' +
+      '<h2 class="ms-h2">Tus clases de hoy</h2><ol class="ms-line">' + classes + '</ol>' +
+      '<h2 class="ms-h2">Te toca esta semana</h2><ol class="ms-line">' + capture +
+      ev('', 'Sin fecha', 'Registrar 5 sesiones de tutoría', 'Seguimiento a tutorías', '#/p/d-tutorias') + '</ol>' +
+      '<h2 class="ms-h2">Lo que viene</h2><ol class="ms-line">' +
+      ev('', '27 de noviembre', 'Cierra la encuesta institucional', 'Encuestas', '#/p/d-encuestas') +
+      ev('', '7 al 11 de diciembre', 'Captura de calificaciones finales', 'Captura de calificaciones', '#/p/d-captura') + '</ol>' +
+      '</div><aside class="ms-side"><section><h2 class="ms-h2">Tus grupos</h2><div class="ms-kpi">' +
+      S.groups.map(function (g) { return '<a href="#/d/lista/' + g.id + '"><span>' + esc(g.course) + ', grupo ' + g.group + '</span><strong>' + g.size + '</strong></a>'; }).join('') +
+      '</div><a class="ms-all" href="#/todo">Abrir Todo SIASE ' + icon('chevron') + '</a></section></aside></div>' + S.nativeNote({ teacher: true }) };
+  }
+
+  function semester() {
+    if (S.isTeacher()) {
+      return { title: 'Mi semestre', html: '<header class="k-head"><h1 tabindex="-1">Mi semestre</h1><p class="k-lead">' + S.teacher.period + ', con las fechas de captura de tus grupos.</p></header><ol class="ms-line">' +
+        ev('is-done', '3 de agosto', 'Inicio de clases', 'Horario de clase', '#/p/d-horario', S.badge('good', 'Hecho')) +
+        ev('is-done', '2 de octubre', 'Capturaste el primer parcial', '95 de 95 calificaciones', '#/p/d-captura', S.badge('good', 'Hecho')) +
+        ev('is-urgent', '20 de noviembre', 'Cierra la captura del segundo parcial', '59 de 95 calificaciones', '#/p/d-captura', S.badge('bad', 'Faltan 36')) +
+        ev('', '27 de noviembre', 'Cierra la encuesta institucional', 'Encuestas', '#/p/d-encuestas') +
+        ev('', '7 al 11 de diciembre', 'Captura de calificaciones finales', 'Captura de calificaciones', '#/p/d-captura') +
+        ev('', '15 de enero', 'Actualiza tu expediente de estímulos', 'Expediente para estímulos', '#/p/d-expediente') + '</ol>' + S.nativeNote({ teacher: true }) };
+    }
+    function group(title, list) { return '<h2 class="ms-h2">' + title + '</h2><ol class="ms-line">' + list.map(evOf).join('') + '</ol>'; }
+    var past = S.timeline.filter(function (e) { return e.state === 'hecho'; });
+    var now = S.timeline.filter(function (e) { return e.week === 16; });
+    var later = S.timeline.filter(function (e) { return e.week > 16; });
+    return { title: 'Mi semestre', html: '<header class="k-head"><h1 tabindex="-1">Mi semestre</h1><p class="k-lead">' + S.student.period + ' de principio a fin. Cada fecha te lleva a la página de SIASE donde se resuelve.</p></header>' +
+      group('Esta semana', now) + group('Lo que viene', later) + group('Ya pasó', past) };
+  }
+
+  function payments() {
+    return { title: 'Pagos', html: '<header class="k-head"><h1 tabindex="-1">Pagos del semestre</h1><p class="k-lead">Tus recibos ordenados por fecha de vencimiento.</p></header>' + S.paymentsOverview() +
+      '<section class="k-block"><h2>Más sobre pagos, facturas y becas</h2>' + S.rows(S.pages.filter(function (p) { return p.area === 'pagos'; }), { primary: 'plain' }) + '</section>' };
+  }
+
+  function all() {
+    var html = '<header class="k-head"><h1 tabindex="-1">Todo SIASE</h1><p class="k-lead">Cada página del portal, ordenada por el momento del semestre en que la necesitas.</p></header>' +
+      '<label class="ms-filter">' + icon('search') + '<span class="sr-only">Filtrar páginas</span><input type="search" id="ms-q" placeholder="Filtrar, por ejemplo: beca" autocomplete="off"></label><p class="k-muted" id="ms-count" role="status"></p>';
+    if (S.isTeacher()) {
+      html += '<section class="ms-moment"><h2>Docencia</h2><p>Lo que haces con tus grupos.</p>' + S.rows(S.teacherPages, { primary: 'plain' }) + '</section>' +
+        '<section class="ms-moment"><h2>Tu cuenta</h2><p>Acceso y sesión.</p>' + S.rows(S.teacherAccount.map(S.find), { primary: 'plain' }) + '</section>';
+    } else {
+      S.moments.forEach(function (m) {
+        var list = S.pages.filter(function (p) { return p.moment === m.id; });
+        html += '<section class="ms-moment"><h2>' + m.label + '</h2><p>' + m.blurb + '</p>' + S.rows(list, { primary: 'plain' }) + '</section>';
+      });
+    }
+    return { title: 'Todo SIASE', html: html };
+  }
+
+  function crumbFor(p) {
+    if (p.teacher) return S.crumbs([['Hoy', '#/'], ['Todo SIASE', '#/todo'], [p.label]]);
+    var m = S.moments.filter(function (x) { return x.id === p.moment; })[0];
+    return S.crumbs([['Hoy', '#/'], ['Todo SIASE', '#/todo'], [m.label, '#/todo'], [p.label]]);
+  }
+
+  function resolve(path) {
+    var doc = S.isTeacher();
+    if (path === '/') return doc ? homeTeacher() : home();
+    if (path === '/semestre') return semester();
+    if (path === '/pagos' && !doc) return payments();
+    if (path === '/todo') return all();
+    var m = path.match(/^\/d\/lista\/(\w+)$/);
+    if (m && doc) {
+      var r = S.rosterView(m[1]);
+      return { title: r.title, html: '<header class="k-head">' + S.crumbs([['Hoy', '#/'], ['Mis grupos', '#/p/d-grupos'], ['Lista']]) + '<h1 tabindex="-1">' + esc(r.title) + '</h1></header>' + r.html + S.nativeNote({ teacher: true }) };
+    }
+    m = path.match(/^\/p\/([\w-]+)$/);
+    if (m) {
+      var p = S.find(m[1]);
+      if (!p || S.pagesFor().indexOf(p) < 0) return null;
+      return S.renderPage(p.id, { before: crumbFor(p) });
+    }
+    return null;
+  }
+
+  function after(path) {
+    var key = path === '/' ? '/' : path === '/semestre' ? '/semestre' : path === '/pagos' ? '/pagos' : '/todo';
+    if (/^\/p\/(horario|d-horario)$/.test(path)) key = '/';
+    document.querySelectorAll('.ms-nav a').forEach(function (a) {
+      if (a.getAttribute('data-nav') === key) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    var q = document.getElementById('ms-q');
+    if (q) q.addEventListener('input', function () {
+      var term = S.fold(q.value.trim()), shown = 0;
+      document.querySelectorAll('.ms-moment').forEach(function (sec) {
+        var any = false;
+        sec.querySelectorAll('.k-rows > li').forEach(function (li) {
+          var hit = !term || S.fold(li.textContent).indexOf(term) >= 0;
+          li.hidden = !hit; if (hit) { any = true; shown++; }
+        });
+        sec.hidden = !any;
+      });
+      document.getElementById('ms-count').textContent = term ? shown + ' páginas coinciden' : '';
+    });
+  }
+
+  S.start({ name: NAME + ' (Oh My SIASE)', shell: shell, resolve: resolve, after: after });
+})();
+</script>
+</body>
+</html>

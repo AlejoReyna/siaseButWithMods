@@ -12,18 +12,26 @@ import {
   LogOut,
   Pin,
   Search,
+  Settings,
   Sparkles,
   UserRound
 } from 'lucide-react';
 import type { MenuCategory, MenuItem } from '@/types/menu';
+import type { HeaderAccountLink, HeaderNavLink } from '@/utils/parser/header-account-links';
 
 export interface SmartSidebarProps {
   items: MenuItem[];
+  accountLinks: HeaderAccountLink[];
+  logoutLink: HeaderNavLink | null;
+  moduleLinks: HeaderNavLink[];
+  serviceLinks: HeaderNavLink[];
+  enhancementsActive: boolean;
   query: string;
   pinnedIds: string[];
   initialCollapsed?: boolean;
   onQueryChange: (query: string) => void;
   onTogglePinned: (id: string) => void;
+  onToggleEnhancements: () => void;
   onToggleCollapsed?: (collapsed: boolean) => void;
 }
 
@@ -47,17 +55,26 @@ const categoryMeta = {
 
 export function SmartSidebar({
   items,
+  accountLinks,
+  logoutLink,
+  moduleLinks,
+  serviceLinks,
+  enhancementsActive,
   query,
   pinnedIds,
   initialCollapsed = false,
   onQueryChange,
   onTogglePinned,
+  onToggleEnhancements,
   onToggleCollapsed
 }: SmartSidebarProps): JSX.Element {
   const [localQuery, setLocalQuery] = useState(query);
   const [localPinnedIds, setLocalPinnedIds] = useState(pinnedIds);
   const [activeId, setActiveId] = useState<string>();
+  const [activeModuleHref, setActiveModuleHref] = useState(moduleLinks[0]?.href);
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const headerLinks = [...moduleLinks, ...serviceLinks];
   const [openGroups, setOpenGroups] = useState<Record<MenuCategory, boolean>>({
     academic: false,
     schedule: false,
@@ -103,6 +120,11 @@ export function SmartSidebar({
   }
 
   function handleLogout(): void {
+    if (logoutLink?.href) {
+      window.top?.location.assign(logoutLink.href);
+      return;
+    }
+
     const logout = Array.from(
       document.querySelectorAll<HTMLAnchorElement | HTMLButtonElement | HTMLInputElement>(
         'a, button, input[type="button"], input[type="submit"]'
@@ -176,6 +198,24 @@ export function SmartSidebar({
             </span>
           </button>
           <button
+            className={
+              enhancementsActive
+                ? 'siase-v2-sidebar__style-toggle'
+                : 'siase-v2-sidebar__style-toggle is-native'
+            }
+            type="button"
+            aria-pressed={!enhancementsActive}
+            aria-label={
+              enhancementsActive
+                ? 'Comparar con la versión original de SIASE'
+                : 'Activar estilos de Oh My SIASE'
+            }
+            title={enhancementsActive ? 'Ver versión original' : 'Activar Oh My SIASE'}
+            onClick={onToggleEnhancements}
+          >
+            <span aria-hidden="true">◐</span>
+          </button>
+          <button
             className="siase-v2-sidebar__collapse-toggle"
             type="button"
             aria-expanded={!isCollapsed}
@@ -214,6 +254,40 @@ export function SmartSidebar({
           <Home size={18} aria-hidden="true" />
           <span>Inicio</span>
         </button>
+
+        {headerLinks.length ? (
+          <section className="siase-v2-sidebar__modules" aria-label="Módulos y servicios del portal">
+            <h2 className="siase-v2-sidebar__modules-title">Módulos</h2>
+            <ul className="siase-v2-sidebar__module-list">
+              {moduleLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    className={activeModuleHref === link.href ? 'is-active' : undefined}
+                    href={link.href}
+                    target={link.target}
+                    title={link.label}
+                    onClick={() => setActiveModuleHref(link.href)}
+                  >
+                    <span>{link.label}</span>
+                  </a>
+                </li>
+              ))}
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    target={link.target}
+                    title={link.label}
+                    rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  >
+                    <span>{link.label}</span>
+                    {link.target !== 'center' ? <em>{link.target === '_top' ? '↗' : '＋'}</em> : null}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {pinnedItems.length ? (
           <section className="siase-v2-nav-group siase-v2-nav-group--favorites">
@@ -255,6 +329,48 @@ export function SmartSidebar({
           <p className="siase-v2-no-results">No encontramos un servicio con ese nombre.</p>
         ) : null}
       </div>
+
+      {accountLinks.length ? (
+        <section
+          className="siase-v2-sidebar__settings"
+          aria-label="Configuración de la cuenta"
+        >
+          <button
+            className="siase-v2-sidebar__settings-toggle"
+            type="button"
+            aria-expanded={settingsOpen}
+            aria-controls="siase-v2-settings-links"
+            title="Configuración de cuenta"
+            onClick={() => {
+              if (isCollapsed) {
+                setSettingsOpen(true);
+                toggleCollapsed();
+                return;
+              }
+              setSettingsOpen((current) => !current);
+            }}
+          >
+            <Settings size={18} aria-hidden="true" />
+            <span>Cuenta</span>
+            <ChevronDown
+              size={15}
+              aria-hidden="true"
+              className={settingsOpen ? 'is-open' : undefined}
+            />
+          </button>
+          {settingsOpen && !isCollapsed ? (
+            <ul id="siase-v2-settings-links">
+              {accountLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} target={link.target} title={link.label}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
 
       <footer className="siase-v2-sidebar__footer">
         <button type="button" onClick={handleLogout}>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SIASE de Bolsillo | Oh My SIASE</title>
+<link rel="stylesheet" href="../shared/kit.css">
+<style>
+/* Propuesta 5: SIASE de Bolsillo. Cinco pestañas fijas, pensado primero para el celular. */
+:root {
+  --bg: #f3f5fa; --surface: #ffffff; --surface-2: #e8ecf5;
+  --ink: #101a33; --ink-2: #4d5870; --line: #d6dcea;
+  --accent: #1a45c7; --accent-soft: #e3eafd; --focus: #b45309;
+  --radius: 18px; --radius-s: 12px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, sans-serif;
+  --display: var(--font);
+  --tabs-h: 68px;
+}
+body { padding-bottom: calc(var(--tabs-h) + env(safe-area-inset-bottom, 0px)); }
+.sb-bar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px var(--pad); background: var(--bg); }
+.sb-bar h2 { flex: 1; font-size: 1.05rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-bar a, .sb-bar span.sp { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; flex: none; }
+.sb-bar a { background: var(--surface); border: 1px solid var(--line); text-decoration: none; }
+main { max-width: 760px; margin: 0 auto; padding: 8px var(--pad) 40px; }
+.k-head h1 { font-size: clamp(1.6rem, 1.3rem + 1.6vw, 2.1rem); font-weight: 800; }
+
+/* Barra de pestañas */
+.sb-tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; justify-content: space-around; height: calc(var(--tabs-h) + env(safe-area-inset-bottom, 0px)); padding: 6px 6px env(safe-area-inset-bottom, 0px); background: var(--surface); border-top: 1px solid var(--line); }
+.sb-tabs a { position: relative; flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-decoration: none; font-size: .76rem; font-weight: 700; color: var(--ink-2); border-radius: 14px; }
+.sb-tabs a .ic { width: 1.6rem; height: 1.6rem; }
+.sb-tabs a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.sb-tabs em { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 20px; padding: 0 5px; border-radius: 999px; background: var(--bad); color: #fff; font-style: normal; font-size: .72rem; line-height: 20px; text-align: center; }
+@media (min-width: 900px) {
+  body { padding-bottom: 0; padding-left: 104px; }
+  .sb-tabs { top: 0; right: auto; bottom: 0; width: 104px; height: auto; flex-direction: column; justify-content: flex-start; gap: 6px; padding: 96px 10px 10px; border-top: 0; border-right: 1px solid var(--line); }
+  .sb-tabs a { flex: none; max-width: none; min-height: 68px; }
+  .k-proto { margin-left: -104px; position: relative; z-index: 40; }
+}
+
+.sb-h { font-size: 1.1rem; font-weight: 800; margin: 26px 4px 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.sb-h small { font-weight: 600; font-size: .85rem; color: var(--ink-2); }
+
+/* Inicio */
+.sb-hello { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.sb-hello .k-avatar { width: 48px; height: 48px; }
+.sb-hello h1 { font-size: 1.45rem; font-weight: 800; line-height: 1.15; }
+.sb-hello p { color: var(--ink-2); font-size: .9rem; }
+.sb-now { display: block; padding: 18px; border-radius: 22px; background: var(--accent); color: #fff; text-decoration: none; }
+.sb-now small { display: block; opacity: .9; }
+.sb-now b { display: block; font-size: 1.35rem; line-height: 1.2; margin: 4px 0; }
+.sb-now .sb-prog { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, .3); margin-top: 12px; overflow: hidden; }
+.sb-now .sb-prog i { display: block; height: 100%; width: 40%; background: #fff; border-radius: 999px; }
+.sb-now :focus-visible, .sb-now:focus-visible { outline-color: #fff; }
+.sb-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.sb-quick a { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 2px; text-decoration: none; font-size: .76rem; font-weight: 700; text-align: center; border-radius: 16px; }
+.sb-quick a span { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); color: var(--accent); font-size: 1.2rem; }
+.sb-quick a:hover span { background: var(--accent); color: #fff; border-color: var(--accent); }
+.sb-todo li + li { margin-top: 8px; }
+.sb-todo a { display: flex; gap: 12px; align-items: center; padding: 14px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--line); text-decoration: none; }
+.sb-todo a > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+.sb-todo small { color: var(--ink-2); }
+.sb-two { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 28px; }
+.sb-two > div { min-width: 0; }
+@media (min-width: 900px) { main { max-width: 1000px; } .sb-two { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+
+/* Cartera */
+.sb-wallet { position: relative; padding: 20px; border-radius: 24px; background: var(--ink); color: #fff; }
+.sb-wallet small { opacity: .85; }
+.sb-wallet strong { display: block; font-size: 2.3rem; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.sb-wallet .k-btn { margin-top: 14px; border-color: #fff; background: #fff; color: var(--ink); }
+.sb-wallet :focus-visible { outline-color: #ffd166; }
+.sb-cards { margin-top: -18px; padding: 0 10px; }
+.sb-card { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; text-decoration: none; box-shadow: 0 -6px 14px -10px rgba(16, 26, 51, .35); }
+.sb-card + .sb-card { margin-top: -6px; }
+.sb-card b { font-size: 1rem; }
+.sb-card strong { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.sb-card .k-badge { grid-column: 1 / -1; justify-self: start; }
+
+/* Perfil */
+.sb-me { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 8px 0 4px; }
+.sb-me .k-avatar { width: 84px; height: 84px; font-size: 1.6rem; }
+.sb-me h1 { font-size: 1.4rem; font-weight: 800; }
+.sb-me p { color: var(--ink-2); font-size: .92rem; }
+.sb-out { width: 100%; justify-content: center; margin-top: 26px; color: var(--bad); border-color: var(--bad); }
+
+/* Listas con aspecto de app */
+.k-rows { border-radius: var(--radius); }
+.k-row__ic { border-radius: 12px; }
+.k-btn { border-radius: 999px; }
+.k-stat, .k-scroll, .k-receipt, .k-day { border-radius: var(--radius); }
+@media (max-width: 899px) { .k-week-wrap { display: none; } .k-days { display: block; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<div id="chrome"></div>
+<main id="view"></main>
+<nav class="sb-tabs" id="tabs" aria-label="Pestañas principales"></nav>
+
+<script src="../shared/data.js"></script>
+<script src="../shared/kit.js"></script>
+<script>
+(function () {
+  var S = window.SIASE, icon = S.icon, esc = S.esc;
+  var NAME = 'SIASE de Bolsillo';
+  var T_TABS = [
+    { id: 'inicio', label: 'Inicio', icon: 'home' }, { id: 'grupos', label: 'Grupos', icon: 'users' },
+    { id: 'captura', label: 'Captura', icon: 'edit' }, { id: 'agenda', label: 'Agenda', icon: 'calendar' },
+    { id: 'yo', label: 'Yo', icon: 'user' }
+  ];
+  var T_TAB_OF = { 'd-grupos': 'grupos', 'd-captura': 'captura', 'd-horario': 'agenda', 'd-tutorias': 'agenda', 'd-encuestas': 'agenda', 'd-datos': 'yo', 'd-expediente': 'yo' };
+  var BADGES = { pagos: 2, tramites: 2 };
+
+  function tabOf(p) { return p.teacher ? T_TAB_OF[p.id] : S.isTeacher() ? 'yo' : S.areaToTab[p.area]; }
+  function tabHref(id) { return id === 'inicio' ? '#/' : '#/t/' + id; }
+
+  function shell() {
+    document.getElementById('chrome').innerHTML = S.protoBar(5, NAME);
+    var doc = S.isTeacher();
+    document.getElementById('tabs').innerHTML = (doc ? T_TABS : S.tabs).map(function (t) {
+      var n = doc ? (t.id === 'captura' ? 2 : 0) : BADGES[t.id];
+      return '<a href="' + tabHref(t.id) + '" data-tab="' + t.id + '">' + icon(t.icon) + '<span>' + t.label + '</span>' + (n ? '<em aria-label="' + n + ' pendientes">' + n + '</em>' : '') + '</a>';
+    }).join('');
+  }
+
+  function sec(title, ids, note) {
+    return '<h2 class="sb-h">' + title + (note ? '<small>' + note + '</small>' : '') + '</h2>' + S.rows(ids.map(S.find), { primary: 'plain' });
+  }
+  function ofArea(a) { return S.pages.filter(function (p) { return p.area === a; }).map(function (p) { return p.id; }); }
+  function todo(href, ic, title, sub, badge) {
+    return '<li><a href="' + href + '"><span class="k-row__ic">' + icon(ic) + '</span><span><b>' + title + '</b><small>' + sub + '</small>' + (badge || '') + '</span>' + icon('chevron', 'k-row__go') + '</a></li>';
+  }
+  function quick(href, ic, label) { return '<a href="' + href + '"><span>' + icon(ic) + '</span>' + label + '</a>'; }
+
+  /* ---------- Pestañas de estudiante ---------- */
+  function inicio() {
+    var st = S.student;
+    return { title: 'Inicio', html:
+      '<div class="sb-hello"><span class="k-avatar" aria-hidden="true">' + st.initials + '</span><div><h1 tabindex="-1">Hola, ' + st.first + '</h1><p>' + st.today.label + ', semana ' + st.today.week + ' de ' + st.today.weeks + '</p></div></div>' +
+      '<div class="sb-two"><div>' +
+      '<a class="sb-now" href="#/p/horario"><small>Ahora en clase, termina a las 8:40</small><b>Sistemas Operativos</b><small>Salón 4203, grupo 004. Sigue Probabilidad y Estadística, salón 2301</small><span class="sb-prog" aria-hidden="true"><i></i></span></a>' +
+      '<div class="sb-quick">' + quick('#/p/horario', 'calendar', 'Horario') + quick('#/p/calificaciones', 'check', 'Calificaciones') + quick('#/p/kardex', 'book', 'Kardex') + quick('#/p/situacion', 'id', 'Credencial') + '</div>' +
+      '<h2 class="sb-h">Tus clases de hoy <small><a href="#/p/horario">Ver semana</a></small></h2><ul class="sb-todo">' + S.classesOn(st.today.day).map(function (c, i) {
+        return todo('#/p/horario', 'clock', esc(c.name), S.hours[c.start] + ' a ' + S.endHour(c) + ', salón ' + c.room, i === 0 ? S.badge('good', 'Ya pasó') : i === 1 ? S.badge('warn', 'Ahora') : '');
+      }).join('') + '</ul>' +
+      '</div><div>' +
+      '<h2 class="sb-h">Pendientes <small>3 con fecha</small></h2><ul class="sb-todo">' +
+      todo('#/t/pagos', 'wallet', 'Paga la cuota interna', S.money(3150), S.badge('bad', 'Vence en 4 días')) +
+      todo('#/p/documentos', 'upload', 'Vuelve a subir tu certificado', 'Lo rechazaron: no se lee', S.badge('bad', 'Rechazado')) +
+      todo('#/p/encuestas', 'chat', 'Contesta la encuesta de tu facultad', 'Toma unos 5 minutos', S.badge('warn', 'Cierra el 27 de noviembre')) + '</ul>' +
+      '<h2 class="sb-h">Avisos de la UANL <small><a href="#/p/avisos">Ver todos</a></small></h2><ul class="sb-todo">' + S.notices.slice(0, 2).map(function (n) { return todo('#/p/avisos', 'bell', esc(n.title), n.date); }).join('') + '</ul>' +
+      '</div></div>' };
+  }
+  function estudios() {
+    var st = S.student;
+    return { title: 'Estudios', html: '<header class="k-head"><h1 tabindex="-1">Estudios</h1></header>' +
+      '<div class="k-stats">' + S.stat('Promedio', st.average.toFixed(1), 'de 100') + S.stat('Créditos', '96 de 220', S.bar(96, 220, 'Créditos aprobados')) + S.stat('Inscripción', '14 de enero', '10:30, faltan 59 días') + '</div>' +
+      '<div class="sb-two"><div>' + sec('Este semestre', ['horario', 'calificaciones', 'evaluacion']) + sec('Mi carrera', ['kardex', 'creditos', 'situacion']) + '</div><div>' +
+      sec('Inscripción', ofArea('inscripcion')) + sec('English UANL', ofArea('ingles')) + '</div></div>' };
+  }
+  function pagos() {
+    var pend = S.receipts.filter(function (r) { return r.state === 'pendiente'; });
+    return { title: 'Pagos', html: '<header class="k-head"><h1 tabindex="-1">Pagos</h1></header>' +
+      '<div class="sb-two"><div><div class="sb-wallet"><small>Por pagar en ' + S.student.period + '</small><strong>' + S.money(S.owed) + '</strong><small>2 recibos. El primero vence el 20 de noviembre.</small><br><a class="k-btn" href="#/p/comercio">' + icon('card') + 'Pagar en línea</a></div>' +
+      '<div class="sb-cards">' + pend.map(function (r) { return '<a class="sb-card" href="#/p/' + r.page + '"><b>' + esc(r.concept) + '</b><strong>' + S.money(r.amount) + '</strong>' + S.badge(r.dueIn <= 5 ? 'bad' : 'warn', 'Vence el ' + r.due) + '</a>'; }).join('') + '</div>' +
+      '<h2 class="sb-h">Ya pagaste <small>' + S.money(6580) + '</small></h2><ul class="sb-todo">' + S.receipts.filter(function (r) { return r.state === 'pagado'; }).map(function (r) { return todo('#/p/' + r.page, 'receipt', esc(r.concept), S.money(r.amount), S.badge('good', 'Pagado el ' + r.paid)); }).join('') + '</ul></div><div>' +
+      sec('Recibos y boletas', ['recibo-interno', 'recibo-servicios', 'recibo-inter-servicios', 'recibo-inter-interno', 'recibo-asesorias', 'boleta-exens', 'comercio']) +
+      sec('Becas', ['beca-solicitud', 'beca-documentos', 'beca-resultado']) +
+      sec('Tesorería: facturas, crédito y devoluciones', ['tes-credito', 'tes-factura', 'tes-cancelar-factura', 'tes-factura-dep', 'tes-devolucion', 'tes-comercio']) + '</div></div>' };
+  }
+  function tramites() {
+    return { title: 'Trámites', html: '<header class="k-head"><h1 tabindex="-1">Trámites</h1></header><div class="sb-two"><div>' +
+      sec('Documentos y trámites', ofArea('tramites'), '1 documento rechazado') + '</div><div>' +
+      sec('Encuestas', ofArea('encuestas'), '1 abierta') + sec('Vida universitaria', ofArea('vida')) + '</div></div>' };
+  }
+  function yo() {
+    var st = S.student;
+    return { title: 'Yo', html: '<div class="sb-me"><span class="k-avatar" aria-hidden="true">' + st.initials + '</span><h1 tabindex="-1">' + esc(st.name) + '</h1><p>Matrícula ' + st.matricula + '</p><p>' + esc(st.program) + ', ' + st.facultyShort + '</p>' +
+      '<div class="k-actions" style="justify-content:center"><a class="k-btn" href="#/p/carrera">' + icon('swap') + 'Cambiar de carrera</a><a class="k-btn k-btn--primary" href="#/p/situacion">' + icon('id') + 'Mi credencial</a></div></div>' +
+      '<div class="sb-two"><div>' + sec('Mis datos', ['datos', 'foto-subir', 'foto-consulta']) + sec('Acceso y seguridad', ['contrasena', 'clave', 'sesion']) + '</div><div>' +
+      sec('Otros servicios de la UANL', ['correo', 'nexus', 'codice', 'redes']) + sec('Sobre el portal', ['avisos', 'privacidad', 'original']) + '</div></div>' +
+      '<a class="k-btn sb-out" href="#/p/salir">' + icon('logout') + 'Cerrar sesión</a>' };
+  }
+
+  /* ---------- Pestañas de docente ---------- */
+  function tInicio() {
+    var th = S.teacher;
+    return { title: 'Inicio', html:
+      '<div class="sb-hello"><span class="k-avatar" aria-hidden="true">' + th.initials + '</span><div><h1 tabindex="-1">Hola, ' + th.first + '</h1><p>' + S.student.today.label + ', semana 16 de 20</p></div></div>' +
+      '<div class="sb-two"><div><a class="sb-now" href="#/t/agenda"><small>Tu siguiente clase, 9:30</small><b>Bases de Datos y Lenguajes</b><small>Grupo 009, salón 4207, 35 estudiantes</small></a>' +
+      '<div class="sb-quick">' + quick('#/t/grupos', 'users', 'Listas') + quick('#/t/captura', 'edit', 'Captura') + quick('#/p/d-horario', 'calendar', 'Horario') + quick('#/p/d-tutorias', 'chat', 'Tutorías') + '</div></div><div>' +
+      '<h2 class="sb-h">Pendientes <small>2 con fecha</small></h2><ul class="sb-todo">' +
+      todo('#/t/captura', 'edit', 'Captura el segundo parcial', 'Faltan 36 de 95 calificaciones', S.badge('bad', 'Cierra en 4 días')) +
+      todo('#/p/d-encuestas', 'chat', 'Contesta la encuesta institucional', 'Encuestas', S.badge('warn', 'Cierra el 27 de noviembre')) +
+      todo('#/p/d-tutorias', 'chat', 'Registra 5 sesiones de tutoría', 'Seguimiento a tutorías') + '</ul></div></div>' + S.nativeNote({ teacher: true }) };
+  }
+  function tSimple(title, ids, extra) {
+    return { title: title, html: '<header class="k-head"><h1 tabindex="-1">' + title + '</h1></header>' + (extra || '') + S.rows(ids.map(S.find), { primary: 'plain' }) + S.nativeNote({ teacher: true }) };
+  }
+  function tGrupos() { return { title: 'Grupos', html: '<header class="k-head"><h1 tabindex="-1">Grupos</h1><p class="k-lead">3 grupos, 95 estudiantes.</p></header>' + S.views['d-grupos']() + S.nativeNote({ teacher: true }) }; }
+  function tCaptura() { return { title: 'Captura', html: '<header class="k-head"><h1 tabindex="-1">Captura</h1><p class="k-lead">Segundo parcial, cierra el 20 de noviembre.</p></header>' + S.views['d-captura']() + S.nativeNote({ teacher: true }) }; }
+  function tYo() {
+    var th = S.teacher;
+    return { title: 'Yo', html: '<div class="sb-me"><span class="k-avatar" aria-hidden="true">' + th.initials + '</span><h1 tabindex="-1">' + esc(th.name) + '</h1><p>Número de empleado ' + th.employee + '</p><p>Docente, ' + th.facultyShort + '</p></div>' +
+      sec('Mis datos', ['d-datos', 'd-expediente']) + sec('Acceso y seguridad', ['contrasena', 'clave', 'sesion']) + sec('Sobre el portal', ['privacidad', 'original']) +
+      '<a class="k-btn sb-out" href="#/p/salir">' + icon('logout') + 'Cerrar sesión</a>' + S.nativeNote({ teacher: true }) };
+  }
+
+  var current = 'inicio';
+  function topBar(title, tab) {
+    return '<div class="sb-bar"><a href="' + tabHref(tab) + '" aria-label="Volver">' + icon('back') + '</a><h2 aria-hidden="true">' + esc(title) + '</h2><span class="sp"></span></div>';
+  }
+  function resolve(path) {
+    var doc = S.isTeacher(), m;
+    if (path === '/') { current = 'inicio'; return doc ? tInicio() : inicio(); }
+    if ((m = path.match(/^\/t\/(\w+)$/))) {
+      current = m[1];
+      var map = doc ? { grupos: tGrupos, captura: tCaptura, agenda: function () { return tSimple('Agenda', ['d-horario', 'd-tutorias', 'd-encuestas']); }, yo: tYo }
+        : { estudios: estudios, pagos: pagos, tramites: tramites, yo: yo };
+      return map[m[1]] ? map[m[1]]() : null;
+    }
+    if ((m = path.match(/^\/d\/lista\/(\w+)$/)) && doc) {
+      current = 'grupos';
+      var r = S.rosterView(m[1]);
+      return { title: r.title, html: topBar('Lista de clase', 'grupos') + '<header class="k-head"><h1 tabindex="-1">' + esc(r.title) + '</h1></header>' + r.html + S.nativeNote({ teacher: true }) };
+    }
+    if ((m = path.match(/^\/p\/([\w-]+)$/))) {
+      var p = S.find(m[1]);
+      if (!p || S.pagesFor().indexOf(p) < 0) return null;
+      current = tabOf(p) || 'inicio';
+      var out = S.renderPage(p.id, { heading: 'label' });
+      out.html = topBar(p.label, current) + out.html;
+      return out;
+    }
+    return null;
+  }
+  function after() {
+    document.querySelectorAll('.sb-tabs a').forEach(function (a) {
+      if (a.getAttribute('data-tab') === current) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  S.start({ name: NAME + ' (Oh My SIASE)', shell: shell, resolve: resolve, after: after });
+})();
+</script>
+</body>
+</html>
