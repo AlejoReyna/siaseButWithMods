@@ -32,7 +32,7 @@
   "content_scripts": [
     {
       "js": [
-        "assets/frameset-injector.ts-loader-8Y5ySuzI.js"
+        "assets/frameset-injector.ts-loader-Bl72Mjqn.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*default.htm*"
@@ -42,7 +42,7 @@
     },
     {
       "js": [
-        "assets/top-frame.ts-loader-CKindH83.js"
+        "assets/top-frame.ts-loader-dZlofFIn.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*maintop.htm*"
@@ -56,7 +56,7 @@
     },
     {
       "js": [
-        "assets/left-frame.ts-loader-CXzkzrkQ.js"
+        "assets/left-frame.ts-loader-DwZ4MFxK.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*mainleftdin01.htm*"
@@ -69,7 +69,7 @@
     },
     {
       "js": [
-        "assets/center-frame.ts-loader-2aMSyjAK.js",
+        "assets/center-frame.ts-loader-DAyq68_C.js",
         "assets/profile-card-patch.ts-BoCyLWv3.js"
       ],
       "matches": [
@@ -84,7 +84,7 @@
     },
     {
       "js": [
-        "assets/service-page.ts-loader-C6tnIZR4.js"
+        "assets/service-page.ts-loader-DmM_hqaE.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/eselcarrera.htm*",
@@ -126,7 +126,7 @@
     },
     {
       "js": [
-        "assets/router.ts-loader-CQjHcyKG.js"
+        "assets/router.ts-loader-DzoXu1zq.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/econcfs01.htm*",
@@ -165,21 +165,21 @@
       "resources": [
         "src/content/styles/shadow.css",
         "icons/*.png",
-        "assets/single-view-layout-DtTghrDV.js",
+        "assets/single-view-layout-BtNc9W3E.js",
         "assets/debug-C4jjSgQw.js",
         "assets/enhancements-DkMg9RFN.js",
         "assets/siase-url-Bw4iX3q2.js",
         "assets/storage-jOxuUkTc.js",
-        "assets/frameset-injector.ts-la_LT9bf.js",
+        "assets/frameset-injector.ts-CDc_cnKd.js",
         "assets/student-CtiA_2I8.js",
         "assets/dom-Df3yQYNr.js",
-        "assets/top-frame.ts-BjsJbzGL.js",
+        "assets/top-frame.ts-BuwXpdmx.js",
         "assets/jsx-runtime-xq64MgJl.js",
         "assets/calendar-days-Ct-V_F48.js",
-        "assets/left-frame.ts-9Ffs9qGE.js",
+        "assets/left-frame.ts-D81XxdqH.js",
         "assets/center-ui-ChfrDVUE.js",
         "assets/legacy-announcements-C6tCkt5X.js",
-        "assets/center-frame.ts-BZ01e8iy.js",
+        "assets/center-frame.ts-DWZhxEGE.js",
         "assets/profile-card-patch.ts-BoCyLWv3.js",
         "assets/theme-6truD-rp.js",
         "assets/gym-reservation-page.ts-Jhbzqrbd.js"
@@ -196,7 +196,7 @@
         "assets/legacy-announcements-C6tCkt5X.js",
         "assets/enhancements-DkMg9RFN.js",
         "assets/storage-jOxuUkTc.js",
-        "assets/service-page.ts-C4Pebp4c.js"
+        "assets/service-page.ts-DF09AAXb.js"
       ],
       "use_dynamic_url": false
     },
@@ -238,11 +238,11 @@
         "assets/debug-C4jjSgQw.js",
         "assets/enhancements-DkMg9RFN.js",
         "assets/dom-Df3yQYNr.js",
+        "assets/student-CtiA_2I8.js",
         "assets/siase-url-Bw4iX3q2.js",
         "assets/storage-jOxuUkTc.js",
         "assets/legacy-announcements-C6tCkt5X.js",
-        "assets/student-CtiA_2I8.js",
-        "assets/router.ts-DQ0MM69L.js"
+        "assets/router.ts-DSR0IMRz.js"
       ],
       "use_dynamic_url": false
     }
