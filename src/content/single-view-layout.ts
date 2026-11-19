@@ -8,7 +8,7 @@ type SiaseLayoutWindow = Window & {
   __SIASE_V2_SIDEBAR_ANIMATION__?: number;
 };
 
-const TOP_NAV_HEIGHT = 70;
+const TOP_NAV_HEIGHT = 0;
 const SIDEBAR_WIDTH = 264;
 const COLLAPSED_SIDEBAR_WIDTH = 72;
 const SIDEBAR_ANIMATION_DURATION = 260;

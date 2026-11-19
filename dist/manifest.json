@@ -32,7 +32,7 @@
   "content_scripts": [
     {
       "js": [
-        "assets/frameset-injector.ts-loader-DhrYurMg.js"
+        "assets/frameset-injector.ts-loader-B7YNdwbm.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*default.htm*"
@@ -42,7 +42,7 @@
     },
     {
       "js": [
-        "assets/top-frame.ts-loader-IeeP1Suc.js"
+        "assets/top-frame.ts-loader-S2dRaCuv.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*maintop.htm*"
@@ -56,7 +56,7 @@
     },
     {
       "js": [
-        "assets/left-frame.ts-loader-BU1-HfKt.js"
+        "assets/left-frame.ts-loader-BShtc7rd.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*mainleftdin01.htm*"
@@ -69,7 +69,7 @@
     },
     {
       "js": [
-        "assets/center-frame.ts-loader-s3GjU2Ql.js",
+        "assets/center-frame.ts-loader-l_7fMQYC.js",
         "assets/profile-card-patch.ts-Bu23nPPb.js"
       ],
       "matches": [
@@ -165,21 +165,21 @@
       "resources": [
         "src/content/styles/shadow.css",
         "icons/*.png",
-        "assets/single-view-layout-jw8yJzMm.js",
+        "assets/single-view-layout-q6BqPqPi.js",
         "assets/debug-C4vZYygt.js",
         "assets/enhancements-B4_3YfIK.js",
         "assets/siase-url-Dd1LOL1s.js",
         "assets/storage-BmjRE9vg.js",
-        "assets/frameset-injector.ts-DrNRkIwO.js",
+        "assets/frameset-injector.ts-Ce6CAWPC.js",
         "assets/student-Y-PS7-wH.js",
         "assets/dom-cx16r59w.js",
-        "assets/top-frame.ts-D5HanBq4.js",
+        "assets/top-frame.ts-DpJbB9tu.js",
         "assets/jsx-runtime-xq64MgJl.js",
         "assets/calendar-days-Ct-V_F48.js",
-        "assets/left-frame.ts-BaSrw4Jg.js",
+        "assets/left-frame.ts-3n9HxRyJ.js",
         "assets/center-ui-UT_szDHn.js",
         "assets/legacy-announcements-c1G8AOO1.js",
-        "assets/center-frame.ts-hbKOijG-.js",
+        "assets/center-frame.ts-SPT6ZPNS.js",
         "assets/profile-card-patch.ts-Bu23nPPb.js",
         "assets/theme-B9wjBaMz.js",
         "assets/gym-reservation-page.ts-BEsY0cns.js"
