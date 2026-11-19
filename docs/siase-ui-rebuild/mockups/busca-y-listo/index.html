@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Busca y Listo | Oh My SIASE</title>
+<link rel="stylesheet" href="../shared/kit.css">
+<style>
+/* Propuesta 4: Busca y Listo. Un buscador que responde, y debajo el directorio completo siempre visible. */
+:root {
+  --bg: #f6f5fb; --surface: #ffffff; --surface-2: #eceaf6;
+  --ink: #1b1933; --ink-2: #514e6b; --line: #d6d3e6;
+  --accent: #4338b8; --accent-soft: #e9e7fb; --focus: #b45309;
+  --info: #3b3391; --info-soft: #e9e7fb;
+  --radius: 12px;
+  --display: "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; padding: 2px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); color: var(--ink-2); }
+.bl-top { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bl-top__in { max-width: 1040px; margin: 0 auto; padding: 12px var(--pad); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px 18px; align-items: center; }
+.bl-logo { font-family: var(--display); font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+.bl-who { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; min-height: 44px; font-size: .88rem; }
+.bl-who .k-avatar { width: 36px; height: 36px; font-size: .8rem; }
+.bl-box { position: relative; }
+.bl-field { display: flex; align-items: center; gap: 10px; padding: 0 14px; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; }
+.bl-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.bl-field input { flex: 1; min-width: 0; min-height: 52px; border: 0; background: none; outline: 0; font-size: 1.1rem; }
+.bl-field .ic { color: var(--accent); width: 1.4em; height: 1.4em; }
+.bl-panel { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 40px -18px rgba(27, 25, 51, .45); overflow: hidden; max-height: min(70vh, 560px); overflow-y: auto; }
+.bl-panel[hidden] { display: none; }
+.bl-ans { display: flex; gap: 12px; align-items: center; padding: 14px 16px; background: var(--accent); color: #fff; text-decoration: none; }
+.bl-ans b { display: block; font-family: var(--display); font-size: 1.2rem; line-height: 1.25; }
+.bl-ans small { opacity: .9; }
+.bl-ans .ic { width: 1.6em; height: 1.6em; }
+.bl-opt { display: flex; gap: 12px; align-items: center; padding: 10px 16px; text-decoration: none; border-top: 1px solid var(--line); min-height: 52px; }
+.bl-opt span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.bl-opt small { color: var(--ink-2); }
+.bl-opt[aria-selected="true"], .bl-opt:hover { background: var(--accent-soft); }
+.bl-ans[aria-selected="true"] { box-shadow: inset 0 0 0 3px #fff; }
+.bl-foot { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 8px 16px; font-size: .82rem; color: var(--ink-2); border-top: 1px solid var(--line); background: var(--surface-2); }
+.bl-none { padding: 16px; color: var(--ink-2); }
+@media (max-width: 640px) {
+  .bl-top__in { grid-template-columns: 1fr auto; }
+  .bl-box { grid-column: 1 / -1; grid-row: 2; }
+  .bl-who span:last-child { display: none; }
+  .bl-foot { display: none; }
+}
+main { max-width: 1040px; margin: 0 auto; padding: 28px var(--pad) 88px; }
+.bl-hero h1 { font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; max-width: 18ch; }
+.bl-try { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; align-items: center; }
+.bl-try a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); text-decoration: none; }
+.bl-try a:hover { border-color: var(--accent); color: var(--accent); }
+.bl-h2 { font-family: var(--display); font-size: 1.25rem; margin: 36px 0 4px; }
+.bl-h2 + p { color: var(--ink-2); margin-bottom: 14px; }
+.bl-now { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+.bl-now a { display: flex; gap: 12px; align-items: flex-start; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; }
+.bl-now a:hover { border-color: var(--accent); }
+.bl-now a > span { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.bl-now small { color: var(--ink-2); }
+.bl-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface-2); margin-bottom: 16px; }
+.bl-tabs a { min-height: 40px; display: inline-flex; align-items: center; padding: 0 14px; border-radius: 9px; text-decoration: none; font-weight: 600; color: var(--ink-2); }
+.bl-tabs a[aria-current="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(27, 25, 51, .2); }
+/* Directorio: lista densa en columnas, sin tarjetas */
+.bl-dir { columns: 3 260px; column-gap: 32px; }
+.bl-dir section { break-inside: avoid; margin-bottom: 18px; }
+.bl-dir h3 { font-family: var(--display); font-size: 1rem; color: var(--accent); padding-bottom: 4px; border-bottom: 2px solid var(--accent); margin-bottom: 4px; }
+.bl-dir a { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 6px; border-radius: 8px; text-decoration: none; line-height: 1.25; }
+.bl-dir a:hover { background: var(--accent-soft); color: var(--accent); }
+.bl-dir a .ic { color: var(--ink-2); width: 1.1em; height: 1.1em; }
+.bl-dir a span { flex: 1; }
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<div id="chrome"></div>
+<main id="view"></main>
+
+<script src="../shared/data.js"></script>
+<script src="../shared/kit.js"></script>
+<script>
+(function () {
+  var S = window.SIASE, icon = S.icon, esc = S.esc, fold = S.fold;
+  var NAME = 'Busca y Listo';
+
+  /* Respuestas al instante: datos que la extensión ya leyó de las páginas originales */
+  var ANSWERS = [
+    { kw: ['promedio', 'kardex', 'voy'], text: 'Tu promedio general es 88.6', sub: '96 de 220 créditos aprobados. Abrir Kardex', href: '#/p/kardex', ic: 'chart' },
+    { kw: ['debo', 'adeudo', 'pagar', 'pago', 'recibo', 'cuota', 'cuanto'], text: 'Debes $3,530.00', sub: 'El primer recibo vence el 20 de noviembre. Abrir mis recibos', href: '#/pagos', ic: 'wallet' },
+    { kw: ['horario', 'clase', 'salon', 'hoy', 'siguiente'], text: 'Tu siguiente clase es Probabilidad y Estadística, 8:40', sub: 'Salón 2301, grupo 012. Abrir Horario', href: '#/p/horario', ic: 'calendar' },
+    { kw: ['inscripcion', 'inscribo', 'fecha', 'cuando'], text: 'Te inscribes el jueves 14 de enero a las 10:30', sub: 'Faltan 59 días. Abrir Consulta fecha de inscripción', href: '#/p/fecha-inscripcion', ic: 'clock' },
+    { kw: ['calificacion', 'calificaciones', 'nota', 'notas'], text: 'Tienes 2 de 7 calificaciones publicadas', sub: 'Cultura de Paz 95, Administración de Proyectos 90. Abrir Calificaciones', href: '#/p/calificaciones', ic: 'check' },
+    { kw: ['credencial', 'matricula', 'estatus', 'situacion'], text: 'Matrícula 1234567, estudiante regular', sub: 'Credencial vigente. Abrir Situación estudiante', href: '#/p/situacion', ic: 'id' },
+    { kw: ['documento', 'documentos', 'certificado', 'expediente'], text: 'Te falta 1 documento', sub: 'Certificado de bachillerato rechazado. Abrir Carga de documentos', href: '#/p/documentos', ic: 'upload' },
+    { kw: ['credito', 'creditos', 'faltan', 'avance'], text: 'Te faltan 124 créditos para egresar', sub: 'Llevas 96 de 220. Abrir Créditos académicos', href: '#/p/creditos', ic: 'ring' }
+  ];
+  var T_ANSWERS = [
+    { kw: ['captura', 'capturar', 'calificacion', 'calificaciones', 'minuta', 'parcial'], text: 'Te faltan 36 calificaciones del segundo parcial', sub: 'Cierra el 20 de noviembre. Abrir Captura de calificaciones', href: '#/p/d-captura', ic: 'edit' },
+    { kw: ['lista', 'grupo', 'grupos', 'alumnos', 'estudiantes'], text: 'Tienes 3 grupos y 95 estudiantes', sub: 'Abrir Mis grupos y listas de clase', href: '#/p/d-grupos', ic: 'users' },
+    { kw: ['horario', 'clase', 'salon', 'hoy', 'siguiente'], text: 'Tu siguiente clase es Bases de Datos, grupo 009, 9:30', sub: 'Salón 4207. Abrir Horario de clase', href: '#/p/d-horario', ic: 'calendar' }
+  ];
+  function answerFor(q) {
+    var words = fold(q).split(/\s+/).filter(function (w) { return w.length >= 3; });
+    var list = S.isTeacher() ? T_ANSWERS : ANSWERS;
+    for (var i = 0; i < list.length; i++) {
+      for (var j = 0; j < words.length; j++) {
+        if (list[i].kw.some(function (k) { return k.indexOf(words[j]) === 0 || words[j].indexOf(k) === 0; })) return list[i];
+      }
+    }
+    return null;
+  }
+
+  function shell() {
+    var who = S.person(), doc = S.isTeacher();
+    document.getElementById('chrome').innerHTML = S.protoBar(4, NAME) +
+      '<header class="bl-top"><div class="bl-top__in"><a class="bl-logo" href="#/">Oh My SIASE</a>' +
+      '<div class="bl-box"><form class="bl-field" role="search" id="bl-form">' + icon('search') +
+      '<label class="sr-only" for="bl-q">Busca una página o haz una pregunta</label>' +
+      '<input id="bl-q" type="search" role="combobox" aria-expanded="false" aria-controls="bl-panel" aria-autocomplete="list" autocomplete="off" placeholder="' + (doc ? 'Escribe: captura, lista, horario' : 'Escribe: kardex, pagar, beca') + '"><kbd aria-hidden="true">/</kbd></form>' +
+      '<div class="bl-panel" id="bl-panel" role="listbox" aria-label="Resultados" hidden></div></div>' +
+      '<a class="bl-who" href="' + (doc ? '#/p/d-datos' : '#/p/carrera') + '" title="' + (doc ? 'Mis datos' : 'Cambiar de carrera') + '"><span class="k-avatar" aria-hidden="true">' + who.initials + '</span><span>' + esc(who.first) + '</span></a>' +
+      '</div></header>';
+    wireSearch();
+  }
+
+  var active = -1;
+  function wireSearch() {
+    var q = document.getElementById('bl-q'), panel = document.getElementById('bl-panel');
+    function close() { panel.hidden = true; q.setAttribute('aria-expanded', 'false'); q.removeAttribute('aria-activedescendant'); active = -1; }
+    function paint() {
+      var term = q.value.trim();
+      if (!term) { close(); return; }
+      var ans = answerFor(term), res = S.search(term).slice(0, 7), html = '';
+      if (ans) html += '<a class="bl-ans" role="option" id="bl-o0" href="' + ans.href + '">' + icon(ans.ic) + '<span><b>' + esc(ans.text) + '</b><small>' + esc(ans.sub) + '</small></span></a>';
+      res.forEach(function (p, i) {
+        html += '<a class="bl-opt" role="option" id="bl-o' + (i + 1) + '" href="#/p/' + p.id + '">' + icon(p.icon) + '<span><b>' + esc(p.label) + '</b><small>' + esc(p.plain) + '</small></span>' + S.targetBadge(p) + '</a>';
+      });
+      if (!ans && !res.length) html = '<p class="bl-none">Nada coincide con "' + esc(term) + '". Revisa el directorio completo en el inicio.</p>';
+      html += '<div class="bl-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> para moverte</span><span><kbd>Enter</kbd> para abrir</span><span><kbd>Esc</kbd> para cerrar</span></div>';
+      panel.innerHTML = html; panel.hidden = false; q.setAttribute('aria-expanded', 'true'); active = -1;
+    }
+    function move(d) {
+      var opts = panel.querySelectorAll('[role="option"]');
+      if (!opts.length) return;
+      active = (active + d + opts.length) % opts.length;
+      opts.forEach(function (o, i) { o.setAttribute('aria-selected', String(i === active)); });
+      q.setAttribute('aria-activedescendant', opts[active].id);
+      opts[active].scrollIntoView({ block: 'nearest' });
+    }
+    q.addEventListener('input', paint);
+    q.addEventListener('focus', function () { if (q.value.trim()) paint(); });
+    q.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (panel.hidden) paint(); move(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+      else if (e.key === 'Escape') { close(); }
+    });
+    document.getElementById('bl-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var opts = panel.querySelectorAll('[role="option"]');
+      var target = active >= 0 && opts[active] ? opts[active].getAttribute('href') : '#/q?' + encodeURIComponent(q.value.trim());
+      close(); location.hash = target;
+    });
+    panel.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.bl-box')) close(); });
+  }
+  document.addEventListener('keydown', function (e) {
+    var q = document.getElementById('bl-q');
+    var typing = /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName);
+    if ((e.key === '/' && !typing) || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey))) { e.preventDefault(); q.focus(); q.select(); }
+  });
+
+  function dirAZ(list) {
+    var groups = {};
+    list.slice().sort(function (a, b) { return fold(a.label) < fold(b.label) ? -1 : 1; }).forEach(function (p) {
+      var k = fold(p.label).charAt(0).toUpperCase();
+      (groups[k] = groups[k] || []).push(p);
+    });
+    return '<div class="bl-dir">' + Object.keys(groups).sort().map(function (k) {
+      return '<section><h3>' + k + '</h3>' + groups[k].map(link).join('') + '</section>';
+    }).join('') + '</div>';
+  }
+  function dirTopics() {
+    if (S.isTeacher()) return '<div class="bl-dir"><section><h3>Docencia</h3>' + S.teacherPages.map(link).join('') + '</section><section><h3>Mi cuenta</h3>' + S.teacherAccount.map(S.find).map(link).join('') + '</section></div>';
+    return '<div class="bl-dir"><section><h3>Inicio</h3>' + link(S.byId.avisos) + '</section>' + S.areas.map(function (a) {
+      return '<section><h3>' + esc(a.label) + '</h3>' + S.pages.filter(function (p) { return p.area === a.id; }).map(link).join('') + '</section>';
+    }).join('') + '</div>';
+  }
+  function link(p) { return '<a href="#/p/' + p.id + '">' + icon(p.icon) + '<span>' + esc(p.label) + '</span></a>'; }
+
+  function home(mode) {
+    var doc = S.isTeacher(), who = S.person();
+    var tries = doc ? ['captura', 'lista de clase', 'horario', 'tutorías', 'contraseña'] : ['mi promedio', 'cuánto debo', 'horario de hoy', 'beca', 'fecha de inscripción', 'contraseña'];
+    var now = doc
+      ? '<a href="#/p/d-captura">' + icon('edit') + '<span><b>Captura el segundo parcial</b><small>Faltan 36 calificaciones</small>' + S.badge('bad', 'Cierra el 20 de noviembre') + '</span></a>' +
+        '<a href="#/p/d-horario">' + icon('calendar') + '<span><b>Siguiente clase: 9:30</b><small>Bases de Datos, grupo 009, salón 4207</small></span></a>' +
+        '<a href="#/p/d-tutorias">' + icon('chat') + '<span><b>5 sesiones de tutoría por registrar</b><small>Seguimiento a tutorías</small></span></a>'
+      : '<a href="#/pagos">' + icon('wallet') + '<span><b>Paga la cuota interna: ' + S.money(3150) + '</b><small>Recibo interno</small>' + S.badge('bad', 'Vence el 20 de noviembre') + '</span></a>' +
+        '<a href="#/p/documentos">' + icon('upload') + '<span><b>Vuelve a subir tu certificado</b><small>Carga de documentos</small>' + S.badge('bad', 'Rechazado') + '</span></a>' +
+        '<a href="#/p/horario">' + icon('calendar') + '<span><b>Siguiente clase: 8:40</b><small>Probabilidad y Estadística, salón 2301</small></span></a>' +
+        '<a href="#/p/encuestas">' + icon('chat') + '<span><b>Contesta la encuesta de tu facultad</b><small>Encuestas</small>' + S.badge('warn', 'Cierra el 27 de noviembre') + '</span></a>';
+    var list = S.pagesFor();
+    return { title: 'Inicio', html:
+      '<header class="k-head bl-hero"><h1 tabindex="-1">' + who.first + ', escribe lo que necesitas</h1><p class="k-lead">El buscador de arriba entiende nombres oficiales y palabras comunes. Si la respuesta es un dato, te lo da sin abrir nada. Atajo: <kbd>/</kbd> o <kbd>Ctrl</kbd> <kbd>K</kbd>.</p>' +
+      '<div class="bl-try"><span class="k-muted">Prueba con</span>' + tries.map(function (t) { return '<a href="#/q?' + encodeURIComponent(t) + '">' + esc(t) + '</a>'; }).join('') + '</div></header>' +
+      '<h2 class="bl-h2">Para hoy</h2><p>Lo que tiene fecha cerca.</p><div class="bl-now">' + now + '</div>' +
+      '<h2 class="bl-h2" id="directorio">Todo SIASE</h2><p>Las ' + list.length + ' páginas del portal, sin esconder ninguna. No necesitas buscar si prefieres recorrer la lista.</p>' +
+      '<div class="bl-tabs"><a href="#/" aria-current="' + (mode !== 'temas') + '">De la A a la Z</a><a href="#/temas" aria-current="' + (mode === 'temas') + '">Por tema</a></div>' +
+      (mode === 'temas' ? dirTopics() : dirAZ(list)) + (doc ? S.nativeNote({ teacher: true }) : '') };
+  }
+
+  function results(q) {
+    var ans = answerFor(q), res = S.search(q);
+    if (ans && !res.length) {
+      /* si solo hay respuesta, se listan también las páginas del mismo tema */
+      ans.kw.forEach(function (k) { S.search(k).forEach(function (p) { if (res.indexOf(p) < 0) res.push(p); }); });
+      res = res.slice(0, 6);
+    }
+    return { title: 'Resultados', html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Resultados']]) + '<h1 tabindex="-1">Resultados para "' + esc(q) + '"</h1><p class="k-lead" role="status">' + (ans ? '1 respuesta y ' : '') + res.length + ' páginas.</p></header>' +
+      (ans ? '<a class="bl-ans" style="border-radius:14px;margin-bottom:14px" href="' + ans.href + '">' + icon(ans.ic) + '<span><b>' + esc(ans.text) + '</b><small>' + esc(ans.sub) + '</small></span></a>' : '') +
+      (res.length ? S.rows(res, { primary: 'label' }) : (ans ? '' : '<p class="k-empty">Nada coincide. <a href="#/">Recorre el directorio completo</a>.</p>')) };
+  }
+
+  function resolve(path, query) {
+    var doc = S.isTeacher(), m;
+    if (path === '/') return home('az');
+    if (path === '/temas') return home('temas');
+    if (path === '/q') return results(query);
+    if (path === '/pagos' && !doc) return { title: 'Mis recibos', html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Mis recibos']]) + '<h1 tabindex="-1">Mis recibos</h1><p class="k-lead">Todo lo que debes y lo que ya pagaste.</p></header>' + S.paymentsOverview() + '<section class="k-block"><h2>Páginas de pagos, Tesorería y becas</h2>' + S.rows(S.pages.filter(function (p) { return p.area === 'pagos'; }), { primary: 'label' }) + '</section>' };
+    if ((m = path.match(/^\/d\/lista\/(\w+)$/)) && doc) {
+      var r = S.rosterView(m[1]);
+      return { title: r.title, html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Mis grupos', '#/p/d-grupos'], ['Lista']]) + '<h1 tabindex="-1">' + esc(r.title) + '</h1></header>' + r.html + S.nativeNote({ teacher: true }) };
+    }
+    if ((m = path.match(/^\/p\/([\w-]+)$/))) {
+      var p = S.find(m[1]);
+      if (!p || S.pagesFor().indexOf(p) < 0) return null;
+      var out = S.renderPage(p.id, { before: S.crumbs([['Inicio', '#/'], [p.label]]) });
+      var rel = (p.teacher ? S.teacherPages : S.pagesFor().filter(function (x) { return x.area === p.area; })).filter(function (x) { return x !== p; }).slice(0, 5);
+      if (rel.length) out.html += '<section class="k-block"><h2>Páginas relacionadas</h2>' + S.rows(rel, { primary: 'label' }) + '</section>';
+      return out;
+    }
+    return null;
+  }
+  S.start({ name: NAME + ' (Oh My SIASE)', shell: shell, resolve: resolve });
+})();
+</script>
+</body>
+</html>

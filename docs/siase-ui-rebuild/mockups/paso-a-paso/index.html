@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paso a Paso | Oh My SIASE</title>
+<link rel="stylesheet" href="../shared/kit.css">
+<style>
+/* Propuesta 2: Paso a Paso. Una sola columna, una pregunta por pantalla, lenguaje llano. */
+:root {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #eef3f1;
+  --ink: #0d1f1c; --ink-2: #44524f; --line: #c5d0cc;
+  --accent: #0a5a54; --accent-soft: #e0efec; --focus: #0d1f1c;
+  --radius: 4px; --radius-s: 4px;
+  --font: "Avenir Next", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --display: "Avenir Next", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+body { font-size: 1.0625rem; }
+a:focus-visible, button:focus-visible, summary:focus-visible { background-color: #ffdd57; color: #0d1f1c; box-shadow: 0 4px 0 #0d1f1c; outline: 3px solid #ffdd57; outline-offset: 0; }
+.pp-top { border-bottom: 4px solid var(--accent); }
+.pp-top__in { max-width: 780px; margin: 0 auto; padding: 12px var(--pad); display: flex; align-items: center; gap: 8px 20px; flex-wrap: wrap; }
+.pp-logo { font-family: var(--display); font-weight: 800; font-size: 1.2rem; text-decoration: none; margin-right: auto; }
+.pp-top nav { display: flex; gap: 4px 18px; flex-wrap: wrap; }
+.pp-top nav a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; }
+.pp-top nav a[aria-current="page"] { text-decoration-thickness: 3px; color: var(--accent); }
+.pp-who { background: var(--surface-2); }
+.pp-who p { max-width: 780px; margin: 0 auto; padding: 8px var(--pad); font-size: .92rem; color: var(--ink-2); }
+main { max-width: 780px; margin: 0 auto; padding: 32px var(--pad) 96px; }
+.k-head h1 { font-size: clamp(1.8rem, 1.2rem + 2.6vw, 2.7rem); font-weight: 800; letter-spacing: -0.02em; }
+.k-lead { font-size: 1.1rem; }
+.pp-h2 { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 40px 0 6px; }
+.pp-h2 + p { color: var(--ink-2); margin-bottom: 12px; }
+
+/* Lista de tareas: filas grandes separadas por líneas, no tarjetas */
+.pp-tasks { border-top: 2px solid var(--ink); }
+.pp-tasks > li { border-bottom: 1px solid var(--line); }
+.pp-task { display: flex; align-items: center; gap: 16px; padding: 16px 4px; text-decoration: none; min-height: 76px; }
+.pp-task:hover { background: var(--accent-soft); }
+.pp-task:hover b { text-decoration: underline; text-decoration-thickness: 2px; }
+.pp-task__ic { display: grid; place-items: center; width: 48px; height: 48px; flex: none; border-radius: 50%; background: var(--accent); color: #fff; font-size: 1.15rem; }
+.pp-task__tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pp-task__tx b { font-family: var(--display); font-size: 1.2rem; font-weight: 700; line-height: 1.25; }
+.pp-task__tx small { color: var(--ink-2); font-size: .95rem; }
+.pp-task__n { color: var(--ink-2); font-size: .9rem; white-space: nowrap; }
+@media (max-width: 520px) { .pp-task__n { display: none; } .pp-task { gap: 12px; } }
+
+/* Recomendaciones del día */
+.pp-first { display: grid; gap: 12px; }
+.pp-first li { border: 2px solid var(--ink); border-left-width: 10px; padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.pp-first li.is-bad { border-color: var(--bad); }
+.pp-first div { flex: 1; min-width: 200px; }
+.pp-first b { display: block; font-size: 1.1rem; }
+.pp-first small { color: var(--ink-2); font-size: .95rem; }
+
+/* Respuestas rápidas */
+.pp-answers { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.pp-answers div { display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; padding: 12px 4px; border-bottom: 1px solid var(--line); }
+.pp-answers dt { color: var(--ink-2); }
+.pp-answers dd { font-weight: 700; }
+.pp-answers a { font-weight: 400; margin-left: 10px; font-size: .95rem; }
+
+/* Pasos de una guía */
+.pp-steps { display: flex; gap: 6px; margin: 0 0 24px; counter-reset: paso; }
+.pp-steps li { flex: 1; counter-increment: paso; padding-top: 10px; border-top: 6px solid var(--line); font-size: .9rem; color: var(--ink-2); }
+.pp-steps li::before { content: "Paso " counter(paso); display: block; font-weight: 700; }
+.pp-steps li.is-done { border-top-color: var(--accent); }
+.pp-steps li.is-now { border-top-color: var(--ink); color: var(--ink); }
+.pp-choice { display: flex; gap: 14px; align-items: flex-start; padding: 16px; margin-bottom: 10px; border: 2px solid var(--line); cursor: pointer; }
+.pp-choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.pp-choice input { width: 26px; height: 26px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+.pp-choice span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.pp-choice strong { font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+.pp-sum { border: 2px solid var(--ink); padding: 4px 18px; }
+.pp-sum div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.pp-sum div:last-child { border-bottom: 0; }
+.pp-sum dt { color: var(--ink-2); }
+.pp-sum dd { font-weight: 700; text-align: right; }
+.k-btn { min-height: 48px; font-size: 1.05rem; border-width: 2px; border-color: var(--ink); }
+.k-btn--primary { border-color: var(--accent); box-shadow: 0 3px 0 #06302d; }
+.pp-next { margin-top: 44px; padding-top: 20px; border-top: 2px solid var(--ink); }
+.pp-next h2 { font-family: var(--display); font-size: 1.2rem; margin-bottom: 8px; }
+.pp-help { margin-top: 28px; }
+.pp-help summary { font-weight: 600; color: var(--accent); cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; }
+.pp-help p { margin-top: 6px; color: var(--ink-2); max-width: 60ch; }
+.k-rows { border-radius: 0; border-width: 2px 0 1px; border-color: var(--ink) transparent var(--line); }
+.k-row { padding: 12px 4px; min-height: 64px; }
+.k-row__tx b { font-size: 1.08rem; }
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Saltar al contenido</a>
+<div id="chrome"></div>
+<main id="view"></main>
+
+<script src="../shared/data.js"></script>
+<script src="../shared/kit.js"></script>
+<script>
+(function () {
+  var S = window.SIASE, icon = S.icon, esc = S.esc;
+  var NAME = 'Paso a Paso';
+
+  function shell() {
+    var who = S.person(), doc = S.isTeacher();
+    document.getElementById('chrome').innerHTML = S.protoBar(2, NAME) +
+      '<header class="pp-top"><div class="pp-top__in"><a class="pp-logo" href="#/">Oh My SIASE</a>' +
+      '<nav aria-label="Principal"><a href="#/" data-nav="/">' + icon('home') + 'Inicio</a><a href="#/todas" data-nav="/todas">' + icon('list') + 'Todas las opciones</a><a href="#/p/salir" data-nav="/p/salir">' + icon('logout') + 'Salir</a></nav></div></header>' +
+      '<div class="pp-who"><p>Entraste como <b>' + esc(who.name) + '</b>, ' + (doc ? 'docente de ' + who.facultyShort + '.' : esc(who.program) + '. <a href="#/p/carrera">Cambiar de carrera</a>') + '</p></div>';
+  }
+
+  function taskRow(href, ic, label, blurb, n) {
+    return '<li><a class="pp-task" href="' + href + '"><span class="pp-task__ic">' + icon(ic) + '</span><span class="pp-task__tx"><b>' + esc(label) + '</b><small>' + esc(blurb) + '</small></span>' +
+      (n ? '<span class="pp-task__n">' + n + (n === 1 ? ' opción' : ' opciones') + '</span>' : '') + icon('chevron', 'k-row__go') + '</a></li>';
+  }
+  function pagesOf(taskId) { return S.pages.filter(function (p) { return p.task === taskId; }); }
+
+  function home() {
+    var st = S.student;
+    return { title: 'Inicio', html:
+      '<header class="k-head"><h1 tabindex="-1">¿Qué quieres hacer hoy, ' + st.first + '?</h1><p class="k-lead">Elige una tarea. Te llevamos paso a paso y te decimos qué sigue.</p></header>' +
+      '<h2 class="pp-h2">Empieza por esto</h2><p>Dos cosas tienen fecha cerca.</p><ul class="pp-first">' +
+      '<li class="is-bad"><div><b>Paga la cuota interna de tu facultad</b><small>' + S.money(3150) + '. Vence el 20 de noviembre, en 4 días.</small></div><a class="k-btn k-btn--primary" href="#/g/pagar/1">Empezar: 3 pasos</a></li>' +
+      '<li class="is-bad"><div><b>Vuelve a subir tu certificado de bachillerato</b><small>Lo rechazaron porque la imagen no se lee.</small></div><a class="k-btn" href="#/p/documentos">Subir documento</a></li></ul>' +
+      '<h2 class="pp-h2">Todas las tareas</h2><p>Cada tarea reúne las páginas de SIASE que sirven para lo mismo.</p><ul class="pp-tasks">' +
+      S.tasks.map(function (t) { return taskRow('#/t/' + t.id, t.icon, t.label, t.blurb, pagesOf(t.id).length); }).join('') + '</ul>' +
+      '<h2 class="pp-h2">Respuestas rápidas</h2><p>Lo que más se consulta, sin abrir nada.</p><dl class="pp-answers">' +
+      '<div><dt>Tu siguiente clase</dt><dd>Probabilidad y Estadística, 8:40, salón 2301 <a href="#/p/horario">Ver horario</a></dd></div>' +
+      '<div><dt>Tu promedio</dt><dd>' + st.average.toFixed(1) + ' <a href="#/p/kardex">Ver kardex</a></dd></div>' +
+      '<div><dt>Lo que debes</dt><dd>' + S.money(S.owed) + ' <a href="#/pagos">Ver recibos</a></dd></div>' +
+      '<div><dt>Tu inscripción</dt><dd>14 de enero, 10:30 <a href="#/p/fecha-inscripcion">Ver fecha</a></dd></div>' +
+      '<div><dt>Avisos nuevos</dt><dd>3 <a href="#/p/avisos">Leer avisos</a></dd></div></dl>' };
+  }
+
+  function homeTeacher() {
+    var th = S.teacher, cap = th.capture;
+    return { title: 'Inicio', html:
+      '<header class="k-head"><h1 tabindex="-1">¿Qué quieres hacer hoy, ' + th.first + '?</h1><p class="k-lead">Elige una tarea. Te llevamos paso a paso y te decimos qué sigue.</p></header>' +
+      '<h2 class="pp-h2">Empieza por esto</h2><p>Una tarea tiene fecha cerca.</p><ul class="pp-first">' +
+      '<li class="is-bad"><div><b>Captura el ' + cap.name.toLowerCase() + '</b><small>Faltan 36 calificaciones en 2 grupos. Cierra el ' + cap.due + ', en ' + cap.dueIn + ' días.</small></div><a class="k-btn k-btn--primary" href="#/g/captura/1">Empezar: 3 pasos</a></li></ul>' +
+      '<h2 class="pp-h2">Todas las tareas</h2><p>Lo que puedes hacer como docente.</p><ul class="pp-tasks">' +
+      S.teacherPages.map(function (p) { return taskRow(p.id === 'd-captura' ? '#/g/captura/1' : '#/p/' + p.id, p.icon, p.plain, p.label); }).join('') +
+      taskRow('#/t/cuenta', 'user', 'Cambiar algo de mi cuenta', 'Contraseña, clave de seguridad y salir', S.teacherAccount.length) + '</ul>' +
+      '<h2 class="pp-h2">Respuestas rápidas</h2><p>Lo que más se consulta, sin abrir nada.</p><dl class="pp-answers">' +
+      '<div><dt>Tu siguiente clase</dt><dd>Bases de Datos, grupo 009, 9:30, salón 4207 <a href="#/p/d-horario">Ver horario</a></dd></div>' +
+      '<div><dt>Estudiantes este periodo</dt><dd>95 en 3 grupos <a href="#/p/d-grupos">Ver grupos</a></dd></div></dl>' + S.nativeNote({ teacher: true }) };
+  }
+
+  function taskPage(id) {
+    var doc = S.isTeacher();
+    var t = S.tasks.filter(function (x) { return x.id === id; })[0];
+    if (!t || (doc && id !== 'cuenta')) return null;
+    var list = doc ? S.teacherAccount.map(S.find) : pagesOf(id);
+    var guide = !doc && GUIDES[id] ? '<ul class="pp-first" style="margin-bottom:28px"><li><div><b>' + GUIDES[id].title + '</b><small>Una guía de ' + GUIDES[id].steps.length + ' pasos, si prefieres que te llevemos.</small></div><a class="k-btn k-btn--primary" href="#/g/' + id + '/1">Empezar la guía</a></li></ul>' : '';
+    return { title: t.label, html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], [t.label]]) + '<h1 tabindex="-1">' + esc(t.label) + '</h1><p class="k-lead">Elige qué necesitas. Debajo de cada opción está su nombre en SIASE.</p></header>' +
+      guide + (id === 'pagar' ? '<p style="margin-bottom:14px"><a href="#/pagos">Ver todos mis recibos y lo que debo</a></p>' : '') +
+      S.rows(list, { primary: 'plain' }) };
+  }
+
+  function allPage() {
+    var html = '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Todas las opciones']]) + '<h1 tabindex="-1">Todas las opciones en una página</h1><p class="k-lead">Para quien prefiere ver todo antes de elegir. Usa Ctrl+F para buscar una palabra.</p></header>';
+    if (S.isTeacher()) {
+      html += '<h2 class="pp-h2">Docencia</h2>' + S.rows(S.teacherPages, { primary: 'plain' }) + '<h2 class="pp-h2">Cambiar algo de mi cuenta</h2>' + S.rows(S.teacherAccount.map(S.find), { primary: 'plain' });
+    } else {
+      S.tasks.forEach(function (t) { html += '<h2 class="pp-h2">' + esc(t.label) + '</h2>' + S.rows(pagesOf(t.id), { primary: 'plain' }); });
+    }
+    return { title: 'Todas las opciones', html: html };
+  }
+
+  /* ---------- Guías: varios pasos que terminan en una página original ---------- */
+  function stepsBar(steps, n) {
+    return '<ol class="pp-steps" aria-label="Pasos de la guía">' + steps.map(function (s, i) {
+      return '<li class="' + (i + 1 < n ? 'is-done' : i + 1 === n ? 'is-now' : '') + '"' + (i + 1 === n ? ' aria-current="step"' : '') + '>' + s.short + '</li>';
+    }).join('') + '</ol>';
+  }
+  var GUIDES = {
+    pagar: { title: 'Pagar un recibo', steps: [
+      { short: 'Elige el recibo', h: '¿Qué quieres pagar?', body: function () {
+        return '<fieldset><legend class="sr-only">Recibos por pagar</legend>' + S.receipts.filter(function (r) { return r.state === 'pendiente'; }).map(function (r, i) {
+          return '<label class="pp-choice"><input type="radio" name="recibo" value="' + r.id + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + esc(r.concept) + '</b><small>Vence el ' + r.due + ', en ' + r.dueIn + ' días</small></span><strong>' + S.money(r.amount) + '</strong></label>';
+        }).join('') + '</fieldset><p class="k-muted">¿No ves tu recibo? <a href="#/t/pagar">Mira todas las opciones de pago</a></p>'; } },
+      { short: 'Revisa los datos', h: 'Revisa tu recibo', body: function () {
+        var r = S.receipts[0];
+        return '<dl class="pp-sum"><div><dt>Concepto</dt><dd>' + esc(r.concept) + '</dd></div><div><dt>Monto</dt><dd>' + S.money(r.amount) + '</dd></div><div><dt>Fecha límite</dt><dd>' + r.due + '</dd></div><div><dt>Referencia</dt><dd>' + r.ref + '</dd></div></dl>'; } },
+      { short: 'Paga', h: '¿Cómo quieres pagar?', body: function () {
+        return '<ul class="pp-tasks">' + taskRowBtn('print', 'Imprimir el recibo y pagar en el banco', 'Se abre el recibo original de SIASE listo para imprimir') +
+          '<li><a class="pp-task" href="#/p/comercio"><span class="pp-task__ic">' + icon('card') + '</span><span class="pp-task__tx"><b>Pagar en línea con tarjeta</b><small>Comercio Electrónico de SIASE</small></span>' + icon('chevron', 'k-row__go') + '</a></li></ul>' +
+          '<p class="k-muted" style="margin-top:14px">El pago tarda hasta 2 días hábiles en aparecer como pagado.</p>'; } }
+    ], end: '#/pagos', endLabel: 'Ver mis recibos' },
+    inscribirme: { title: 'Inscribirme al siguiente semestre', steps: [
+      { short: 'Tu fecha', h: 'Primero, tu fecha de inscripción', body: function () { return S.views['fecha-inscripcion']().split('<section')[0]; } },
+      { short: 'Requisitos', h: 'Revisa que no te falte nada', body: function () {
+        return '<ul class="pp-first"><li class="is-bad"><div><b>Tienes 2 recibos por pagar</b><small>SIASE puede bloquear la inscripción si hay adeudos.</small></div><a class="k-btn" href="#/g/pagar/1">Pagar ahora</a></li>' +
+          '<li class="is-bad"><div><b>Te falta 1 documento</b><small>Certificado de bachillerato rechazado.</small></div><a class="k-btn" href="#/p/documentos">Subir documento</a></li>' +
+          '<li><div><b>Tus datos personales</b><small>SIASE te pide revisarlos cada semestre.</small></div><a class="k-btn" href="#/p/datos">Revisar datos</a></li></ul>'; } },
+      { short: 'Inscríbete', h: 'Abre la inscripción el día que te toca', body: function () {
+        return '<p>La inscripción se hace en la página original de SIASE. La extensión no elige materias ni envía nada por ti.</p><div class="k-actions"><a class="k-btn k-btn--primary" href="#/p/inscripcion">Abrir Inscripción</a><a class="k-btn" href="#/p/preinscripcion">Abrir Pre-Inscripción</a></div>'; } }
+    ], end: '#/t/inscribirme', endLabel: 'Ver todas las opciones de inscripción' },
+    captura: { teacher: true, title: 'Capturar calificaciones', steps: [
+      { short: 'Elige el grupo', h: '¿De qué grupo vas a capturar?', body: function () {
+        return '<fieldset><legend class="sr-only">Grupos</legend>' + S.groups.map(function (g, i) {
+          return '<label class="pp-choice"><input type="radio" name="grupo" value="' + g.id + '"' + (i === 1 ? ' checked' : '') + '><span><b>' + esc(g.course) + ', grupo ' + g.group + '</b><small>' + (g.captured === g.size ? 'Completo' : 'Faltan ' + (g.size - g.captured) + ' de ' + g.size) + '</small></span></label>';
+        }).join('') + '</fieldset>'; } },
+      { short: 'Captura', h: 'Escribe las calificaciones', body: function () { return S.views['d-captura']().replace(/<div class="k-actions">[\s\S]*$/, ''); } },
+      { short: 'Envía la minuta', h: 'Revisa y envía', body: function () {
+        return '<dl class="pp-sum"><div><dt>Grupo</dt><dd>Bases de Datos y Lenguajes, 009</dd></div><div><dt>Evaluación</dt><dd>Segundo parcial</dd></div><div><dt>Capturadas</dt><dd>21 de 35</dd></div></dl><p class="k-muted" style="margin-top:12px">Puedes guardar el avance y enviar la minuta cuando estén todas.</p><div class="k-actions">' + S.nativeBtn('Guardar avance', 'check') + S.nativeBtn('Enviar minuta', 'upload', true) + '</div>'; } }
+    ], end: '#/p/d-grupos', endLabel: 'Ver mis grupos' }
+  };
+  function taskRowBtn(ic, label, blurb) {
+    return '<li><button type="button" class="pp-task" data-native="' + esc(label) + '" style="width:100%;border:0;background:none;text-align:left"><span class="pp-task__ic">' + icon(ic) + '</span><span class="pp-task__tx"><b>' + esc(label) + '</b><small>' + esc(blurb) + '</small></span>' + icon('chevron', 'k-row__go') + '</button></li>';
+  }
+  function guidePage(id, n) {
+    var g = GUIDES[id];
+    if (!g || !!g.teacher !== S.isTeacher()) return null;
+    var s = g.steps[n - 1];
+    if (!s) return null;
+    var last = n === g.steps.length;
+    return { title: g.title + ', paso ' + n, html:
+      '<header class="k-head">' + S.crumbs([['Inicio', '#/'], [g.title]]) + stepsBar(g.steps, n) + '<h1 tabindex="-1">' + esc(s.h) + '</h1></header>' + s.body() +
+      '<div class="k-actions" style="margin-top:28px">' + (n > 1 ? '<a class="k-btn" href="#/g/' + id + '/' + (n - 1) + '">' + icon('back') + 'Atrás</a>' : '<a class="k-btn" href="#/">Cancelar</a>') +
+      (last ? '<a class="k-btn" href="' + g.end + '">' + g.endLabel + '</a>' : '<a class="k-btn k-btn--primary" href="#/g/' + id + '/' + (n + 1) + '">Continuar</a>') + '</div>' +
+      (g.teacher ? S.nativeNote({ teacher: true }) : '<details class="pp-help"><summary>¿Cómo funciona esta guía?</summary><p>Cada paso muestra una página original de SIASE o un dato tomado de ella. La guía solo ordena los pasos; los botones finales activan los controles originales del portal.</p></details>') };
+  }
+
+  function pageView(id) {
+    var p = S.find(id);
+    if (!p || S.pagesFor().indexOf(p) < 0) return null;
+    var doc = S.isTeacher();
+    var t = doc ? null : S.tasks.filter(function (x) { return x.id === p.task; })[0];
+    var crumb = S.crumbs(doc && p.teacher ? [['Inicio', '#/'], [p.label]] : [['Inicio', '#/'], [t ? t.label : 'Cambiar algo de mi cuenta', '#/t/' + (t ? t.id : 'cuenta')], [p.label]]);
+    var r = S.renderPage(id, { heading: 'plain', before: crumb });
+    var sibs = (doc ? (p.teacher ? S.teacherPages : S.teacherAccount.map(S.find)) : pagesOf(p.task)).filter(function (x) { return x !== p; }).slice(0, 4);
+    r.html += '<section class="pp-next"><h2>¿Qué sigue?</h2>' + S.rows(sibs, { primary: 'plain', noSub: true }) + '<p style="margin-top:14px"><a href="#/">Volver a todas las tareas</a></p></section>';
+    return r;
+  }
+
+  function resolve(path) {
+    var doc = S.isTeacher(), m;
+    if (path === '/') return doc ? homeTeacher() : home();
+    if (path === '/todas') return allPage();
+    if (path === '/pagos' && !doc) return { title: 'Mis recibos', html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Pagar o imprimir un recibo', '#/t/pagar'], ['Mis recibos']]) + '<h1 tabindex="-1">Mis recibos y lo que debo</h1><p class="k-lead">Para pagar, elige un recibo o sigue la guía de 3 pasos.</p></header><div class="k-actions" style="margin-bottom:20px"><a class="k-btn k-btn--primary" href="#/g/pagar/1">Empezar la guía para pagar</a></div>' + S.paymentsOverview() };
+    if ((m = path.match(/^\/t\/([\w-]+)$/))) return taskPage(m[1]);
+    if ((m = path.match(/^\/g\/([\w-]+)\/(\d)$/))) return guidePage(m[1], +m[2]);
+    if ((m = path.match(/^\/d\/lista\/(\w+)$/)) && doc) {
+      var r = S.rosterView(m[1]);
+      return { title: r.title, html: '<header class="k-head">' + S.crumbs([['Inicio', '#/'], ['Mis grupos', '#/p/d-grupos'], ['Lista']]) + '<h1 tabindex="-1">' + esc(r.title) + '</h1></header>' + r.html + S.nativeNote({ teacher: true }) };
+    }
+    if ((m = path.match(/^\/p\/([\w-]+)$/))) return pageView(m[1]);
+    return null;
+  }
+  function after(path) {
+    document.querySelectorAll('.pp-top nav a').forEach(function (a) {
+      if (a.getAttribute('data-nav') === path) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  S.start({ name: NAME + ' (Oh My SIASE)', shell: shell, resolve: resolve, after: after });
+})();
+</script>
+</body>
+</html>
