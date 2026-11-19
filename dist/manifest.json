@@ -32,7 +32,7 @@
   "content_scripts": [
     {
       "js": [
-        "assets/frameset-injector.ts-loader-Bl72Mjqn.js"
+        "assets/frameset-injector.ts-loader-8Y5ySuzI.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*default.htm*"
@@ -42,7 +42,7 @@
     },
     {
       "js": [
-        "assets/top-frame.ts-loader-dZlofFIn.js"
+        "assets/top-frame.ts-loader-CKindH83.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*maintop.htm*"
@@ -56,7 +56,7 @@
     },
     {
       "js": [
-        "assets/left-frame.ts-loader-DwZ4MFxK.js"
+        "assets/left-frame.ts-loader-CXzkzrkQ.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/*mainleftdin01.htm*"
@@ -69,7 +69,7 @@
     },
     {
       "js": [
-        "assets/center-frame.ts-loader-DAyq68_C.js",
+        "assets/center-frame.ts-loader-2aMSyjAK.js",
         "assets/profile-card-patch.ts-BoCyLWv3.js"
       ],
       "matches": [
@@ -84,7 +84,7 @@
     },
     {
       "js": [
-        "assets/service-page.ts-loader-DrRvnP-s.js"
+        "assets/service-page.ts-loader-C6tnIZR4.js"
       ],
       "matches": [
         "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/eselcarrera.htm*",
@@ -165,21 +165,21 @@
       "resources": [
         "src/content/styles/shadow.css",
         "icons/*.png",
-        "assets/single-view-layout-BtNc9W3E.js",
+        "assets/single-view-layout-DtTghrDV.js",
         "assets/debug-C4jjSgQw.js",
         "assets/enhancements-DkMg9RFN.js",
         "assets/siase-url-Bw4iX3q2.js",
         "assets/storage-jOxuUkTc.js",
-        "assets/frameset-injector.ts-CDc_cnKd.js",
+        "assets/frameset-injector.ts-la_LT9bf.js",
         "assets/student-CtiA_2I8.js",
         "assets/dom-Df3yQYNr.js",
-        "assets/top-frame.ts-BuwXpdmx.js",
+        "assets/top-frame.ts-BjsJbzGL.js",
         "assets/jsx-runtime-xq64MgJl.js",
         "assets/calendar-days-Ct-V_F48.js",
-        "assets/left-frame.ts-D81XxdqH.js",
+        "assets/left-frame.ts-9Ffs9qGE.js",
         "assets/center-ui-ChfrDVUE.js",
         "assets/legacy-announcements-C6tCkt5X.js",
-        "assets/center-frame.ts-DWZhxEGE.js",
+        "assets/center-frame.ts-BZ01e8iy.js",
         "assets/profile-card-patch.ts-BoCyLWv3.js",
         "assets/theme-6truD-rp.js",
         "assets/gym-reservation-page.ts-Jhbzqrbd.js"
@@ -196,7 +196,7 @@
         "assets/legacy-announcements-C6tCkt5X.js",
         "assets/enhancements-DkMg9RFN.js",
         "assets/storage-jOxuUkTc.js",
-        "assets/service-page.ts-D2EtZJSF.js"
+        "assets/service-page.ts-C4Pebp4c.js"
       ],
       "use_dynamic_url": false
     },

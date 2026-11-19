@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   enhanceAcademicCreditsPage,
+  parseCareerTitleFromCreditHeader,
   parseVisibleCreditTotals
 } from '@/content/pages/academic-credits-page';
 import { enhanceCareerSelectorPage } from '@/content/pages/career-selector-page';
@@ -146,13 +147,20 @@ describe('career selector enhancer', () => {
     const submit = vi.spyOn(form, 'submit').mockImplementation(() => undefined);
 
     expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+    expect(document.querySelector('.siase-v2-module-hub[hidden]')).toBeNull();
+    expect(document.querySelector('.siase-v2-module-tile-wrapper--siase.is-expanded')).toBeNull();
+
+    document.querySelector<HTMLButtonElement>('.siase-v2-module-tile--siase')?.click();
+    expect(document.querySelector<HTMLElement>('.siase-v2-career-shell')?.dataset.siaseView).toBe(
+      'siase-expanded'
+    );
     const choice = document.querySelector<HTMLButtonElement>('.siase-v2-career-choice');
     expect(choice?.querySelector('.siase-v2-career-choice__icon')).toBeTruthy();
     expect(choice?.querySelector('.siase-v2-career-choice__badge')?.textContent).toBe(
       'Carrera disponible'
     );
-    expect(document.querySelector('.siase-v2-career-profile')).toBeTruthy();
-    expect(document.querySelector('.siase-v2-career-announcement')).toBeTruthy();
+    expect(document.querySelector('.siase-v2-module-tile-wrapper--siase.is-expanded')).toBeTruthy();
     choice?.click();
     vi.runAllTimers();
 
@@ -169,6 +177,36 @@ describe('career selector enhancer', () => {
       document.getElementById('siase')?.classList.contains('siase-v2-career-service-panel')
     ).toBe(true);
     vi.useRealTimers();
+  });
+
+  it('keeps the hub visible if enhancement runs again after career links were sanitized', () => {
+    mountFixture('career-selector.html');
+    const form = document.forms.namedItem('SelCarrera') as HTMLFormElement;
+    form
+      .querySelector<HTMLAnchorElement>('a[href]')
+      ?.setAttribute('href', "javascript:self.document.SelCarrera.HTMLCve_Carrera.value='01'");
+
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+    expect(document.querySelector('.siase-v2-career-shell')).toBeTruthy();
+  });
+
+  it('shows the Nexus gateway panel and delegates ingresar to the native control', () => {
+    mountFixture('career-selector.html');
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+
+    document.querySelector<HTMLButtonElement>('.siase-v2-module-tile--nexus')?.click();
+    expect(document.querySelector<HTMLElement>('[data-siase-v2-gateway-panel]')?.hidden).toBe(false);
+
+    const nativeClick = vi.spyOn(
+      document.querySelector('#linkNexus') as HTMLButtonElement,
+      'click'
+    );
+    document.querySelector<HTMLButtonElement>('[data-siase-gateway-action]')?.click();
+    expect(nativeClick).toHaveBeenCalledOnce();
   });
 });
 
@@ -196,23 +234,41 @@ describe('document upload enhancer', () => {
 describe('academic credits enhancer', () => {
   it('uses visible totals and stable accordion/table contracts', () => {
     mountFixture('academic-credits.html');
-    const heading = document.querySelector<HTMLHeadingElement>('#accordion > h3');
-    const headingClick = vi.fn();
-    heading?.addEventListener('click', headingClick);
+    const firstHeading = document.querySelector<HTMLHeadingElement>('#accordion > h3');
+    const secondHeading = document.querySelector<HTMLHeadingElement>('#accordion > h3:nth-of-type(2)');
 
     expect(parseVisibleCreditTotals('Créditos aprobados 180 de 220')).toEqual({
       approved: 180,
       total: 220
     });
+    expect(
+      parseCareerTitleFromCreditHeader(
+        'INGENIERO EN TECNOLOGIA DE SOFTWARE Créditos aprobados 180 de 220'
+      )
+    ).toBe('INGENIERO EN TECNOLOGIA DE SOFTWARE');
     expect(enhanceAcademicCreditsPage(document)).toBe(true);
-    heading?.click();
 
-    const progress = document.querySelector<HTMLElement>('.siase-v2-credit-progress');
-    expect(progress?.getAttribute('aria-valuenow')).toBe('180');
-    expect(progress?.getAttribute('aria-valuemax')).toBe('220');
-    expect(progress?.querySelector<HTMLElement>('span')?.style.width).toBe('81.81818181818183%');
+    expect(document.querySelector('.siase-v2-credit-progress')).toBeNull();
+    expect(document.querySelector<HTMLElement>('.siase-v2-credit-page-title')?.textContent).toBe(
+      'INGENIERO EN TECNOLOGIA DE SOFTWARE'
+    );
     expect(document.querySelectorAll('.siase-v2-credit-table')).toHaveLength(2);
-    expect(headingClick).toHaveBeenCalledOnce();
-    expect(document.querySelector('#ui-id-1')).toBe(heading);
+    expect(
+      document.getElementById('accordion')?.classList.contains('siase-v2-credit-accordion--split')
+    ).toBe(true);
+    expect(firstHeading?.classList.contains('siase-v2-credit-detail-heading')).toBe(true);
+    expect(secondHeading?.classList.contains('siase-v2-credit-list-heading')).toBe(true);
+
+    secondHeading?.click();
+
+    expect(secondHeading?.classList.contains('siase-v2-credit-detail-heading')).toBe(true);
+    expect(firstHeading?.classList.contains('siase-v2-credit-list-heading')).toBe(true);
+    expect(secondHeading?.nextElementSibling?.classList.contains('siase-v2-credit-detail-panel')).toBe(
+      true
+    );
+    expect(firstHeading?.nextElementSibling?.classList.contains('siase-v2-credit-list-panel')).toBe(
+      true
+    );
+    expect(document.querySelector('#ui-id-1')).toBe(firstHeading);
   });
 });
