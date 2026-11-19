@@ -961,6 +961,45 @@ body.siase-v2-service-page .siase-v2-credit-result {
   max-width: none !important;
 }
 
+body.siase-v2-service-page .siase-v2-credit-result--hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body.siase-v2-service-page .siase-v2-credit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-header {
+  padding: 4px 2px 0;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-title {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-subtitle {
+  margin: 8px 0 0;
+  color: #475467;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 body.siase-v2-service-page .siase-v2-credit-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 0.7fr);
@@ -1014,27 +1053,25 @@ body.siase-v2-service-page .siase-v2-credit-accordion--split {
   align-items: start;
 }
 
-body.siase-v2-service-page .siase-v2-credit-accordion--split > :nth-child(1) {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-body.siase-v2-service-page .siase-v2-credit-accordion--split > :nth-child(2) {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-body.siase-v2-service-page .siase-v2-credit-accordion--split > :nth-child(n + 3) {
-  grid-column: 2;
-}
-
-body.siase-v2-service-page .siase-v2-credit-accordion--split > :nth-child(n + 3).siase-v2-credit-heading,
-body.siase-v2-service-page
-  .siase-v2-credit-accordion--split
-  > :nth-child(n + 3).ui-accordion-header {
-  padding-block: 12px 12px !important;
+body.siase-v2-service-page .siase-v2-credit-list-heading,
+body.siase-v2-service-page .siase-v2-credit-list-heading.ui-accordion-header {
+  padding-block: 12px !important;
   font-size: 12px !important;
   line-height: 1.35;
+  cursor: pointer;
+}
+
+body.siase-v2-service-page .siase-v2-credit-list-panel {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.siase-v2-service-page .siase-v2-credit-detail-panel {
+  display: block !important;
 }
 
 body.siase-v2-service-page .siase-v2-credit-heading,
@@ -1178,6 +1215,7 @@ body.siase-v2-service-page .siase-v2-credit-table td {
 
   body.siase-v2-service-page .siase-v2-credit-accordion--split > * {
     grid-column: 1 !important;
+    grid-row: auto !important;
   }
 
   body.siase-v2-service-page .dataTables_wrapper .dataTables_filter input {
