@@ -146,13 +146,20 @@ describe('career selector enhancer', () => {
     const submit = vi.spyOn(form, 'submit').mockImplementation(() => undefined);
 
     expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+    expect(document.querySelector('.siase-v2-module-hub[hidden]')).toBeNull();
+    expect(document.querySelector('.siase-v2-module-tile-wrapper--siase.is-expanded')).toBeNull();
+
+    document.querySelector<HTMLButtonElement>('.siase-v2-module-tile--siase')?.click();
+    expect(document.querySelector<HTMLElement>('.siase-v2-career-shell')?.dataset.siaseView).toBe(
+      'siase-expanded'
+    );
     const choice = document.querySelector<HTMLButtonElement>('.siase-v2-career-choice');
     expect(choice?.querySelector('.siase-v2-career-choice__icon')).toBeTruthy();
     expect(choice?.querySelector('.siase-v2-career-choice__badge')?.textContent).toBe(
       'Carrera disponible'
     );
-    expect(document.querySelector('.siase-v2-career-profile')).toBeTruthy();
-    expect(document.querySelector('.siase-v2-career-announcement')).toBeTruthy();
+    expect(document.querySelector('.siase-v2-module-tile-wrapper--siase.is-expanded')).toBeTruthy();
     choice?.click();
     vi.runAllTimers();
 
@@ -169,6 +176,36 @@ describe('career selector enhancer', () => {
       document.getElementById('siase')?.classList.contains('siase-v2-career-service-panel')
     ).toBe(true);
     vi.useRealTimers();
+  });
+
+  it('keeps the hub visible if enhancement runs again after career links were sanitized', () => {
+    mountFixture('career-selector.html');
+    const form = document.forms.namedItem('SelCarrera') as HTMLFormElement;
+    form
+      .querySelector<HTMLAnchorElement>('a[href]')
+      ?.setAttribute('href', "javascript:self.document.SelCarrera.HTMLCve_Carrera.value='01'");
+
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+    expect(document.querySelectorAll('.siase-v2-module-tile')).toHaveLength(4);
+    expect(document.querySelector('.siase-v2-career-shell')).toBeTruthy();
+  });
+
+  it('shows the Nexus gateway panel and delegates ingresar to the native control', () => {
+    mountFixture('career-selector.html');
+    expect(enhanceCareerSelectorPage(document)).toBe(true);
+
+    document.querySelector<HTMLButtonElement>('.siase-v2-module-tile--nexus')?.click();
+    expect(document.querySelector<HTMLElement>('[data-siase-v2-gateway-panel]')?.hidden).toBe(false);
+
+    const nativeClick = vi.spyOn(
+      document.querySelector('#linkNexus') as HTMLButtonElement,
+      'click'
+    );
+    document.querySelector<HTMLButtonElement>('[data-siase-gateway-action]')?.click();
+    expect(nativeClick).toHaveBeenCalledOnce();
   });
 });
 
@@ -212,6 +249,9 @@ describe('academic credits enhancer', () => {
     expect(progress?.getAttribute('aria-valuemax')).toBe('220');
     expect(progress?.querySelector<HTMLElement>('span')?.style.width).toBe('81.81818181818183%');
     expect(document.querySelectorAll('.siase-v2-credit-table')).toHaveLength(2);
+    expect(
+      document.getElementById('accordion')?.classList.contains('siase-v2-credit-accordion--split')
+    ).toBe(true);
     expect(headingClick).toHaveBeenCalledOnce();
     expect(document.querySelector('#ui-id-1')).toBe(heading);
   });

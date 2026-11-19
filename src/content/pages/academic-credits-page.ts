@@ -115,6 +115,10 @@ export function enhanceAcademicCreditsPage(frameDocument: Document): boolean {
     if (isCreditsTable(table)) table.classList.add('siase-v2-credit-table');
   });
 
+  if (accordion.childElementCount > 2) {
+    accordion.classList.add('siase-v2-credit-accordion--split');
+  }
+
   const totals = findVisibleTotals(frameDocument);
   if (totals) addReadOnlyProgress(frameDocument, accordion, totals);
   return true;
