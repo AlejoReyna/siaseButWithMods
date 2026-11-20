@@ -46,9 +46,7 @@ describe('receipt page v2 presentation', () => {
     );
 
     expect(form.classList.contains('siase-v2-receipt-document')).toBe(true);
-    expect(document.querySelector('[data-siase-v2-receipt-intro] h1')?.textContent).toBe(
-      'Recibo de servicios académicos y escolares'
-    );
+    expect(document.querySelector('[data-siase-v2-receipt-intro]')).toBeNull();
     expect(document.querySelector('.siase-v2-receipt-native-table')).not.toBeNull();
     expect(document.querySelector('.siase-v2-receipt-dialog')).not.toBeNull();
     expect(print?.getAttribute('onclick')).toBe('imprimir()');

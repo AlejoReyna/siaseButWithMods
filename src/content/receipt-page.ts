@@ -12,19 +12,13 @@ const RECEIPT_ROUTES: ReadonlyArray<{ kind: ReceiptPageKind; path: string }> = [
 ];
 
 const copyByKind: Record<
-  Exclude<ReceiptPageKind, 'intersemester-internal'>,
+  Exclude<ReceiptPageKind, 'intersemester-internal' | 'academic-receipt'>,
   { eyebrow: string; title: string; description: string }
 > = {
   'internal-selection': {
     eyebrow: 'Servicios escolares',
     title: 'Recibo interno',
     description: 'Selecciona una boleta para continuar con el flujo nativo de SIASE.'
-  },
-  'academic-receipt': {
-    eyebrow: 'Servicios escolares',
-    title: 'Recibo de servicios académicos y escolares',
-    description:
-      'Revisa la información del recibo. Las acciones financieras e impresión siguen siendo nativas de SIASE.'
   },
   'intersemester-receipt': {
     eyebrow: 'Servicios escolares',
@@ -38,10 +32,15 @@ export function detectReceiptPage(url: URL): ReceiptPageKind | null {
   return RECEIPT_ROUTES.find(({ path }) => url.pathname === path)?.kind ?? null;
 }
 
+type ReceiptPageWithIntro = Exclude<
+  ReceiptPageKind,
+  'intersemester-internal' | 'academic-receipt'
+>;
+
 function addReceiptIntro(
   frameDocument: Document,
   form: HTMLFormElement,
-  kind: Exclude<ReceiptPageKind, 'intersemester-internal'>
+  kind: ReceiptPageWithIntro
 ): void {
   if (frameDocument.querySelector('[data-siase-v2-receipt-intro]')) return;
 
@@ -112,7 +111,9 @@ function enhanceReceiptDocument(
 
   body.classList.add('siase-v2-receipt-page', `siase-v2-receipt-page--${kind}`);
   form.classList.add('siase-v2-receipt-document');
-  addReceiptIntro(frameDocument, form, kind);
+  if (kind !== 'academic-receipt') {
+    addReceiptIntro(frameDocument, form, kind);
+  }
 
   form.querySelectorAll<HTMLTableElement>('table').forEach((table) => {
     table.classList.add('siase-v2-receipt-native-table');
