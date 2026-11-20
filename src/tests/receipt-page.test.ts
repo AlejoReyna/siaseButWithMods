@@ -33,6 +33,7 @@ describe('receipt page v2 presentation', () => {
     expect(document.querySelector('.siase-v2-receipt-selection-table')).not.toBeNull();
     expect(history?.getAttribute('href')).toBe('javascript:consultarPagadas()');
     expect(history?.classList.contains('siase-v2-receipt-history-link')).toBe(true);
+    expect(document.querySelector('[data-siase-v2-receipt-intro]')).toBeNull();
   });
 
   it('wraps a rendered receipt visually without changing its native controls', () => {

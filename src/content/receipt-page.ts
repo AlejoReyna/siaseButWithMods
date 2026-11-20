@@ -12,14 +12,9 @@ const RECEIPT_ROUTES: ReadonlyArray<{ kind: ReceiptPageKind; path: string }> = [
 ];
 
 const copyByKind: Record<
-  Exclude<ReceiptPageKind, 'intersemester-internal' | 'academic-receipt'>,
+  'intersemester-receipt',
   { eyebrow: string; title: string; description: string }
 > = {
-  'internal-selection': {
-    eyebrow: 'Servicios escolares',
-    title: 'Recibo interno',
-    description: 'Selecciona una boleta para continuar con el flujo nativo de SIASE.'
-  },
   'intersemester-receipt': {
     eyebrow: 'Servicios escolares',
     title: 'Recibo intersemestral',
@@ -32,10 +27,7 @@ export function detectReceiptPage(url: URL): ReceiptPageKind | null {
   return RECEIPT_ROUTES.find(({ path }) => url.pathname === path)?.kind ?? null;
 }
 
-type ReceiptPageWithIntro = Exclude<
-  ReceiptPageKind,
-  'intersemester-internal' | 'academic-receipt'
->;
+type ReceiptPageWithIntro = 'intersemester-receipt';
 
 function addReceiptIntro(
   frameDocument: Document,
@@ -111,7 +103,7 @@ function enhanceReceiptDocument(
 
   body.classList.add('siase-v2-receipt-page', `siase-v2-receipt-page--${kind}`);
   form.classList.add('siase-v2-receipt-document');
-  if (kind !== 'academic-receipt') {
+  if (kind === 'intersemester-receipt') {
     addReceiptIntro(frameDocument, form, kind);
   }
 
