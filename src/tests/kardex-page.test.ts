@@ -71,6 +71,11 @@ describe('Kardex v2 presentation', () => {
     expect(print?.getAttribute('onclick')).toBe('imprimir()');
     expect(print?.classList.contains('siase-v2-kardex-print')).toBe(true);
     expect(document.querySelector('[data-siase-v2-kardex-summary]')).not.toBeNull();
+    expect(document.querySelector('[data-siase-v2-kardex-layout]')).not.toBeNull();
+    expect(document.querySelector('.siase-v2-kardex-main > .siase-v2-kardex-table-shell')).not.toBeNull();
+    expect(
+      document.querySelector('.siase-v2-kardex-student__fields dd')?.textContent
+    ).toContain('PERSONA DE PRUEBA');
     expect(document.querySelector('.siase-v2-kardex-progress')?.getAttribute('aria-valuenow')).toBe(
       '150'
     );
@@ -85,6 +90,7 @@ describe('Kardex v2 presentation', () => {
     enhanceKardexPresentation(document, summary);
 
     expect(document.querySelectorAll('[data-siase-v2-kardex-summary]')).toHaveLength(1);
+    expect(document.querySelectorAll('[data-siase-v2-kardex-layout]')).toHaveLength(1);
     expect(document.querySelectorAll('.siase-v2-kardex-table-shell')).toHaveLength(1);
   });
 });

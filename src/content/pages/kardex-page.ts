@@ -1,5 +1,6 @@
 import type { KardexSummary } from '@/types/kardex';
 import { parseKardexSummary } from '@/utils/parser/kardex';
+import { parseStudentInfo } from '@/utils/parser/student';
 import { setStorageValue } from '@/utils/storage';
 
 const OPPORTUNITY_START_INDEX = 4;
@@ -36,6 +37,59 @@ function ensureTableShell(table: HTMLTableElement): HTMLElement {
   table.before(shell);
   shell.append(table);
   return shell;
+}
+
+function ensureKardexLayout(record: HTMLElement): void {
+  if (record.querySelector('[data-siase-v2-kardex-layout]')) return;
+
+  const summary = record.querySelector<HTMLElement>('[data-siase-v2-kardex-summary]');
+  const tableShell = record.querySelector<HTMLElement>('.siase-v2-kardex-table-shell');
+  if (!summary || !tableShell) return;
+
+  const layout = record.ownerDocument.createElement('div');
+  layout.className = 'siase-v2-kardex-layout';
+  layout.dataset.siaseV2KardexLayout = 'true';
+
+  const main = record.ownerDocument.createElement('div');
+  main.className = 'siase-v2-kardex-main';
+
+  const anchor =
+    summary.compareDocumentPosition(tableShell) & Node.DOCUMENT_POSITION_FOLLOWING
+      ? summary
+      : tableShell;
+  record.insertBefore(layout, anchor);
+
+  main.append(tableShell);
+  summary.classList.add('siase-v2-kardex-sidebar');
+  layout.append(main, summary);
+}
+
+function appendStudentFields(
+  frameDocument: Document,
+  host: HTMLElement,
+  summary: KardexSummary
+): void {
+  const student = parseStudentInfo(frameDocument);
+  const list = frameDocument.createElement('dl');
+  list.className = 'siase-v2-kardex-student__fields';
+
+  const fields: Array<[string, string]> = [
+    ['Alumno', student.name || 'No disponible'],
+    ['Carrera', student.program || 'No disponible'],
+    ['Plan de estudio', student.plan || summary.planName || 'No disponible']
+  ];
+
+  fields.forEach(([label, value]) => {
+    const row = frameDocument.createElement('div');
+    const term = frameDocument.createElement('dt');
+    term.textContent = label;
+    const detail = frameDocument.createElement('dd');
+    detail.textContent = value;
+    row.append(term, detail);
+    list.append(row);
+  });
+
+  host.append(list);
 }
 
 function decorateScores(table: HTMLTableElement): void {
@@ -92,12 +146,9 @@ function addSummary(
   studentEyebrow.textContent = 'Información del alumno';
   const studentTitle = frameDocument.createElement('h2');
   studentTitle.textContent = 'Datos académicos';
-  const studentCopy = frameDocument.createElement('div');
-  studentCopy.className = 'siase-v2-kardex-student__copy';
-  const nativeHeader = frameDocument.getElementById('noof');
-  studentCopy.textContent = nativeHeader?.textContent?.replace(/\s+/g, ' ').trim() || 'Información del alumno';
-  studentCard.append(studentEyebrow, studentTitle, studentCopy);
-  nativeHeader?.classList.add('siase-v2-kardex-native-header--relocated');
+  studentCard.append(studentEyebrow, studentTitle);
+  appendStudentFields(frameDocument, studentCard, summary);
+  frameDocument.getElementById('noof')?.classList.add('siase-v2-kardex-native-header--relocated');
 
   const header = frameDocument.createElement('header');
   const copy = frameDocument.createElement('div');
@@ -186,6 +237,7 @@ export function enhanceKardexPresentation(
   const shell = ensureTableShell(table);
   decorateScores(table);
   if (summary) addSummary(frameDocument, shell, summary);
+  ensureKardexLayout(record);
   return true;
 }
 

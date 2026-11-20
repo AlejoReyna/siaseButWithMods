@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>SIASE - Situacion Estudiante UANL</title>
+    <style>
+      #idCredencial {
+        position: relative;
+        width: 350px;
+        height: 220px;
+        color: #ffc72c;
+        background: #253858;
+        border-radius: 12px;
+      }
+      #idCredencial p { position: absolute; top: 62px; left: 18px; text-align: left; }
+      #qrcode { position: absolute; right: 12px; bottom: 12px; }
+    </style>
+  </head>
+  <body>
+    <center>
+      <div>DEPARTAMENTO ESCOLAR Y DE ARCHIVO DE LA UANL</div>
+      <div>SEMESTRE : <strong>Enero-Junio 2099</strong></div>
+      <div>ESTUDIANTE: <strong>0000000 PERSONA DE PRUEBA</strong></div>
+      <div>Identificación Virtual Temporal</div>
+      <div id="idCredencial" class="Credencial">
+        <p>PERSONA DE PRUEBA<br>0000000<br>Enero-Junio 2099</p>
+        <div id="qrcode" class="CodQR"></div>
+      </div>
+      <div>División:-Inscripciones y Credencialización</div>
+      <table><tbody>
+        <tr><td></td><td><div>SITUACIÓN DEL ESTUDIANTE: DEFINITIVO<br>TIPO DE INSCRIPCIÓN: REINGRESO</div></td><td></td></tr>
+        <tr><td></td><td>FOTO ACEPTADA: SI</td><td></td></tr>
+      </tbody></table>
+      <div><b>Nota: El trámite es únicamente al estudiante</b></div>
+      <input type="button" name="Imprimir" value="Imprimir" onclick="imprimir()">
+    </center>
+  </body>
+</html>
