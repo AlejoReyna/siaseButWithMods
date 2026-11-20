@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parallax — demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #0a0a0f;
+      color: #e8e6e3;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .layer {
+      position: absolute;
+      inset: -15% -10%;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .layer--stars {
+      background:
+        radial-gradient(1px 1px at 10% 20%, #fff, transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,.8), transparent),
+        radial-gradient(1.5px 1.5px at 75% 15%, #fff, transparent),
+        radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,.6), transparent),
+        radial-gradient(1px 1px at 25% 90%, #fff, transparent),
+        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,.7), transparent);
+      background-size: 100% 100%;
+      opacity: 0.9;
+    }
+
+    .layer--glow {
+      background: radial-gradient(ellipse 80% 50% at 50% 80%, rgba(99, 102, 241, 0.45), transparent 70%);
+    }
+
+    .layer--mountains {
+      bottom: 0;
+      top: auto;
+      height: 55%;
+      inset-inline: 0;
+      background:
+        linear-gradient(175deg, transparent 40%, #1a1528 41%),
+        linear-gradient(165deg, transparent 52%, #2d2640 53%),
+        linear-gradient(185deg, transparent 38%, #15101f 39%);
+      background-size: 120% 100%, 90% 100%, 100% 100%;
+      background-position: 0 100%, 30% 100%, 60% 100%;
+      background-repeat: no-repeat;
+    }
+
+    .layer--mist {
+      bottom: 0;
+      top: auto;
+      height: 40%;
+      background: linear-gradient(to top, rgba(10, 10, 15, 0.95), transparent);
+    }
+
+    .hero__text {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      transform: translateY(var(--text-y, 0));
+    }
+
+    .hero__text h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__text p {
+      margin-top: 1rem;
+      font-size: 1.125rem;
+      color: rgba(232, 230, 227, 0.65);
+      max-width: 28ch;
+      margin-inline: auto;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,.4);
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    .cards-section {
+      position: relative;
+      min-height: 150vh;
+      padding: 6rem 1.5rem 8rem;
+      background: linear-gradient(180deg, #0a0a0f 0%, #12121a 50%, #0f0f14 100%);
+    }
+
+    .cards-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: #c4b5fd;
+    }
+
+    .card-grid {
+      display: grid;
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      padding: 2rem;
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transform: translateY(var(--card-offset, 40px));
+      opacity: var(--card-opacity, 0);
+      transition: border-color 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(165, 180, 252, 0.35);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      color: rgba(232, 230, 227, 0.6);
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,.35);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero" id="hero">
+    <div class="layer layer--stars" data-parallax="0.15"></div>
+    <div class="layer layer--glow" data-parallax="0.35"></div>
+    <div class="layer layer--mountains" data-parallax="0.55"></div>
+    <div class="layer layer--mist" data-parallax="0.75"></div>
+    <div class="hero__text" data-parallax="0.25">
+      <h1>Noche en capas</h1>
+      <p>Desplázate. Cada capa viaja a su propia velocidad.</p>
+    </div>
+    <span class="scroll-hint">Scroll</span>
+  </header>
+
+  <main class="cards-section">
+    <h2>Tarjetas con entrada suave</h2>
+    <div class="card-grid">
+      <article class="card" data-reveal>
+        <h3>Profundidad</h3>
+        <p>El parallax simula distancia: lo lejano se mueve menos que lo cercano.</p>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Rendimiento</h3>
+        <p>Usamos <code>translate3d</code> y listeners pasivos para mantener 60 fps.</p>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Sin librerías</h3>
+        <p>Un solo archivo HTML con CSS y unas líneas de JavaScript.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer>Demo parallax · solo HTML</footer>
+
+  <script>
+    const hero = document.getElementById('hero');
+    const parallaxEls = document.querySelectorAll('[data-parallax]');
+
+    function onScroll() {
+      const scrollY = window.scrollY;
+      const heroH = hero.offsetHeight;
+      const progress = Math.min(scrollY / heroH, 1);
+
+      parallaxEls.forEach((el) => {
+        const speed = parseFloat(el.dataset.parallax, 10);
+        const y = scrollY * speed * 0.6;
+        el.style.transform = `translate3d(0, ${y}px, 0)`;
+      });
+
+      document.querySelector('.hero__text').style.setProperty('--text-y', `${progress * -30}px`);
+    }
+
+    const revealObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const ratio = entry.intersectionRatio;
+          el.style.setProperty('--card-offset', `${(1 - ratio) * 50}px`);
+          el.style.setProperty('--card-opacity', String(Math.min(ratio * 1.5, 1)));
+        });
+      },
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
+    );
+
+    document.querySelectorAll('[data-reveal]').forEach((card) => revealObs.observe(card));
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+</body>
+</html>

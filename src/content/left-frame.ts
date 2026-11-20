@@ -1,10 +1,16 @@
 import { createElement } from 'react';
 import { SmartSidebar } from '@/components/SmartSidebar';
 import { injectReactRoot } from '@/shadow-dom/inject-react-root';
+import {
+  parseHeaderAccountLinks,
+  parseHeaderLogoutLink,
+  parseHeaderModuleLinks,
+  parseHeaderServiceLinks
+} from '@/utils/parser/header-account-links';
 import { parseMenuItems } from '@/utils/parser/menu';
 import { getStorageValue, setStorageValue } from '@/utils/storage';
 import { collapseLegacyFrames, setSidebarCollapsed } from './single-view-layout';
-import { enhancementsEnabled } from '@/utils/enhancements';
+import { enhancementsEnabled, setEnhancementsEnabled } from '@/utils/enhancements';
 
 const BECAS_PATHS = [
   'bcreq01v2.htm',
@@ -77,10 +83,22 @@ async function mountSidebar(frameDocument: Document): Promise<void> {
   const pinnedIds = (await getStorageValue('pinnedMenuIds')) ?? [];
   await setStorageValue('menuItems', items);
   const rootDocument = frameDocument.defaultView?.top?.document ?? frameDocument;
+  const topDocument =
+    rootDocument.querySelector<HTMLFrameElement>('frame[name="top"]')?.contentDocument ?? null;
+  const accountLinks = topDocument ? parseHeaderAccountLinks(topDocument) : [];
+  const logoutLink = topDocument ? parseHeaderLogoutLink(topDocument) : null;
+  const moduleLinks = topDocument ? parseHeaderModuleLinks(topDocument) : [];
+  const serviceLinks = topDocument ? parseHeaderServiceLinks(topDocument) : [];
+  const enhancementsActive = await enhancementsEnabled();
 
   injectReactRoot(
     createElement(SmartSidebar, {
       items,
+      accountLinks,
+      logoutLink,
+      moduleLinks,
+      serviceLinks,
+      enhancementsActive,
       query: '',
       pinnedIds,
       initialCollapsed: rootDocument.documentElement.dataset.siaseSidebarCollapsed === 'true',
@@ -93,6 +111,9 @@ async function mountSidebar(frameDocument: Document): Promise<void> {
             : [...stored, id];
           return setStorageValue('pinnedMenuIds', next);
         });
+      },
+      onToggleEnhancements: () => {
+        void setEnhancementsEnabled(!enhancementsActive).then(() => window.top?.location.reload());
       }
     }),
     { id: 'siase-v2-sidebar', document: frameDocument }

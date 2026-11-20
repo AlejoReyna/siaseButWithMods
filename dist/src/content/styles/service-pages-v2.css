@@ -167,6 +167,17 @@ body.siase-v2-service-page .siase-v2-career-choices {
   gap: 16px;
 }
 
+body.siase-v2-service-page .siase-v2-career-choices__empty {
+  margin: 0;
+  padding: 16px;
+  color: #57606a;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
 body.siase-v2-service-page .siase-v2-career-choice {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -191,13 +202,14 @@ body.siase-v2-service-page .siase-v2-career-choice:hover {
 }
 
 body.siase-v2-service-page .siase-v2-career-choice:focus-visible,
-body.siase-v2-service-page .siase-v2-career-sidebar__choice:focus-visible {
+body.siase-v2-service-page .siase-v2-module-tile:focus-visible,
+body.siase-v2-service-page .siase-v2-career-shell__modules button:focus-visible {
   outline: 3px solid rgba(9, 105, 218, 0.35);
   outline-offset: 2px;
 }
 
 body.siase-v2-service-page .siase-v2-career-choice,
-body.siase-v2-service-page .siase-v2-career-sidebar,
+body.siase-v2-service-page .siase-v2-module-tile,
 body.siase-v2-service-page .siase-v2-career-shell__header {
   transition:
     opacity 220ms ease,
@@ -206,7 +218,7 @@ body.siase-v2-service-page .siase-v2-career-shell__header {
 }
 
 body.siase-v2-service-page .siase-v2-career-shell.is-transitioning .siase-v2-career-shell__header,
-body.siase-v2-service-page .siase-v2-career-shell.is-transitioning .siase-v2-career-sidebar {
+body.siase-v2-service-page .siase-v2-career-shell.is-transitioning .siase-v2-module-hub {
   opacity: 0;
   transform: translateY(-14px);
 }
@@ -301,17 +313,18 @@ body.siase-v2-service-page .siase-v2-career-native-control {
 }
 
 /* The selector is a full replacement for the old table-based career view. */
-body.siase-v2-service-page.siase-v2-career-selector-page > :not(.siase-v2-career-shell) {
+body.siase-v2-career-selector-page.siase-v2-career-selector-ready > :not(.siase-v2-career-shell) {
   display: none !important;
 }
 
 body.siase-v2-service-page .siase-v2-career-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 78px minmax(0, 1fr);
   min-height: 100vh;
-  overflow: auto;
-  background: #f7f9fb;
+  height: 100vh;
+  overflow: hidden;
+  background: #f0f3f8;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -359,148 +372,366 @@ body.siase-v2-service-page .siase-v2-career-shell__brand em {
   letter-spacing: 0.14em;
 }
 
-body.siase-v2-service-page .siase-v2-career-shell__header nav {
+body.siase-v2-service-page .siase-v2-career-shell__modules {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  color: #526076;
-  font-size: 13px;
-  font-weight: 750;
 }
 
-body.siase-v2-service-page .siase-v2-career-shell__header nav span {
-  padding: 10px 12px;
-}
-
-body.siase-v2-service-page .siase-v2-career-shell__header nav .is-active {
-  color: #123b70;
-  background: #eef4fb;
-  border-radius: 9px;
-}
-
-body.siase-v2-service-page .siase-v2-career-sidebar {
-  padding: 22px 16px;
-  color: #fff;
-  background: #123b70;
-  border-right: 0;
-}
-
-body.siase-v2-service-page .siase-v2-career-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 4px 24px;
-}
-
-body.siase-v2-service-page .siase-v2-career-profile__avatar {
-  display: grid;
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  color: #123b70;
-  background: #ddb03a;
-  border-radius: 50%;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-body.siase-v2-service-page .siase-v2-career-profile > div {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-body.siase-v2-service-page .siase-v2-career-profile strong {
-  color: #fff;
-  font-size: 13px;
-}
-
-body.siase-v2-service-page .siase-v2-career-profile span:last-child {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
-}
-
-body.siase-v2-service-page .siase-v2-career-sidebar__home {
-  padding: 12px;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-body.siase-v2-service-page .siase-v2-career-sidebar > p {
-  margin: 24px 10px 9px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-body.siase-v2-service-page .siase-v2-career-sidebar__choices {
-  display: grid;
-  gap: 6px;
-}
-
-body.siase-v2-service-page .siase-v2-career-sidebar__choice {
-  min-height: 48px;
-  padding: 9px 10px !important;
-  color: rgba(255, 255, 255, 0.92) !important;
-  text-align: left;
+body.siase-v2-service-page .siase-v2-career-shell__modules button {
+  min-height: 40px;
+  padding: 10px 14px !important;
+  color: #526076 !important;
   background: transparent !important;
   border: 0 !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  line-height: 1.25;
+  border-radius: 9px !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
 }
 
-body.siase-v2-service-page .siase-v2-career-sidebar__choice:hover {
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.12) !important;
+body.siase-v2-service-page .siase-v2-career-shell__modules button:hover {
+  color: #123b70 !important;
+  background: #f3f7fc !important;
+}
+
+body.siase-v2-service-page .siase-v2-career-shell__modules button.is-active {
+  color: #123b70 !important;
+  background: #eef4fb !important;
 }
 
 body.siase-v2-service-page .siase-v2-career-shell__main {
-  min-width: 0;
-  padding: clamp(32px, 5vw, 64px);
-}
-
-body.siase-v2-service-page .siase-v2-career-announcement {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  width: min(100%, 1120px);
-  margin-top: 32px;
-  padding: 16px;
-  color: #1f2328;
-  background: #fff;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-body.siase-v2-service-page .siase-v2-career-announcement__icon {
+body.siase-v2-service-page .siase-v2-career-shell__main--hub {
+  background: #dce0e6;
+}
+
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='hub'],
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='siase-expanded'] {
+  grid-template-rows: minmax(0, 1fr);
+  background: #dce0e6;
+}
+
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='hub'] .siase-v2-career-shell__header,
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='siase-expanded'] .siase-v2-career-shell__header {
+  display: none;
+}
+
+body.siase-v2-service-page .siase-v2-module-hub {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+}
+
+body.siase-v2-service-page .siase-v2-module-hub__chrome {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 14px;
+}
+
+body.siase-v2-service-page .siase-v2-module-grid {
   display: grid;
-  flex: 0 0 24px;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-  color: #0969da;
-  background: #ddf4ff;
-  border-radius: 50%;
-  font-family: Georgia, serif;
-  font-size: 15px;
-  font-weight: 700;
+  flex: 1 1 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 2vw, 18px);
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  padding: clamp(12px, 2.4vw, 20px);
 }
 
-body.siase-v2-service-page .siase-v2-career-announcement strong {
-  font-size: 13px;
+body.siase-v2-service-page .siase-v2-module-grid > .siase-v2-module-tile,
+body.siase-v2-service-page .siase-v2-module-grid > .siase-v2-module-tile-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
-body.siase-v2-service-page .siase-v2-career-announcement p {
-  margin: 3px 0 0;
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='siase-expanded'] .siase-v2-module-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  transition: grid-template 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='siase-expanded'] .siase-v2-module-grid > .siase-v2-module-tile {
+  display: none !important;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile-wrapper {
+  min-width: 0;
+  min-height: 0;
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.siase-v2-service-page .siase-v2-module-tile-wrapper--siase {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile-wrapper--siase.is-expanded {
+  display: flex;
+  flex-direction: column;
+  background: #f5dfa0;
+  border-radius: 14px;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__surface {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  transition:
+    opacity 200ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.siase-v2-service-page .siase-v2-module-tile-wrapper--siase.is-expanded .siase-v2-module-tile__surface {
+  display: none;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__expand {
+  display: none;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  height: 100%;
+  padding: clamp(18px, 3vw, 32px);
+  overflow: hidden;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile-wrapper--siase.is-expanded .siase-v2-module-tile__expand {
+  display: flex;
+  animation: siase-v2-expand-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes siase-v2-expand-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__expand-header h1 {
+  margin: 0;
+  color: #1a365d;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__expand-header > p:last-child {
+  margin: 8px 0 0;
   color: #57606a;
-  font-size: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__expand .siase-v2-career-choices {
+  flex: 1 1 auto;
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(16px, 3vh, 28px);
+  min-height: 0;
+  padding: clamp(24px, 5vw, 48px) !important;
+  color: #172033 !important;
+  text-align: left;
+  background: #fff !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: filter 160ms ease;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile:hover {
+  filter: brightness(0.97);
+}
+
+body.siase-v2-service-page .siase-v2-module-tile:focus-visible {
+  outline: 3px solid rgba(18, 59, 112, 0.35);
+  outline-offset: 3px;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__mark {
+  display: grid;
+  width: clamp(64px, 8vw, 92px);
+  height: clamp(64px, 8vw, 92px);
+  place-items: center;
+  color: #fff;
+  border-radius: 12px;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__copy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__copy strong {
+  color: #123b70;
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile__copy span {
+  color: #57606a;
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 500;
   line-height: 1.45;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--siase {
+  color: #5c4800 !important;
+  background: #f5dfa0 !important;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--siase .siase-v2-module-tile__mark {
+  background: #ddb03a;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--siase strong {
+  color: #b8860b;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--correo {
+  color: #0f3f28 !important;
+  background: #c8e8d4 !important;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--correo .siase-v2-module-tile__mark {
+  background: #008d4c;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--correo strong {
+  color: #008d4c;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--nexus {
+  color: #0a2545 !important;
+  background: #c5d4eb !important;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--nexus .siase-v2-module-tile__mark {
+  background: #004085;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--nexus strong {
+  color: #004085;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--codice {
+  color: #5c1821 !important;
+  background: #ecc4c9 !important;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--codice .siase-v2-module-tile__mark {
+  background: #c82333;
+}
+
+body.siase-v2-service-page .siase-v2-module-tile--codice strong {
+  color: #c82333;
+}
+
+body.siase-v2-service-page .siase-v2-module-hub[hidden],
+body.siase-v2-service-page .siase-v2-gateway-service[hidden] {
+  display: none !important;
+}
+
+body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='service'] .siase-v2-gateway-service {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+  padding: clamp(20px, 3vw, 40px);
+  overflow: auto;
+}
+
+body.siase-v2-service-page .siase-v2-gateway-service__header h1 {
+  margin: 0;
+  color: #123b70;
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+body.siase-v2-service-page .siase-v2-gateway-service__header > p:last-child {
+  margin: 12px 0 0;
+  color: #57606a;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+body.siase-v2-service-page .siase-v2-gateway-service__email {
+  margin: 8px 0 0;
+  color: #123b70;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+body.siase-v2-service-page .siase-v2-gateway-service__email[hidden] {
+  display: none !important;
+}
+
+body.siase-v2-service-page .siase-v2-gateway-service__action {
+  align-self: flex-start;
+  min-width: 220px;
+}
+
+body.siase-v2-service-page .siase-v2-career-picker__toolbar {
+  flex: 0 0 auto;
+}
+
+body.siase-v2-service-page .siase-v2-career-picker__back {
+  min-height: 36px;
+  padding: 8px 12px !important;
+  color: #123b70 !important;
+  background: #fff !important;
+  border: 1px solid #d0d7de !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+body.siase-v2-service-page .siase-v2-career-picker__back:hover {
+  background: #f6f8fa !important;
 }
 
 body.siase-v2-service-page .siase-v2-career-native-form table,
@@ -730,6 +961,45 @@ body.siase-v2-service-page .siase-v2-credit-result {
   max-width: none !important;
 }
 
+body.siase-v2-service-page .siase-v2-credit-result--hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body.siase-v2-service-page .siase-v2-credit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-header {
+  padding: 4px 2px 0;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-title {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+body.siase-v2-service-page .siase-v2-credit-page-subtitle {
+  margin: 8px 0 0;
+  color: #475467;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 body.siase-v2-service-page .siase-v2-credit-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 0.7fr);
@@ -775,6 +1045,33 @@ body.siase-v2-service-page .siase-v2-credit-accordion {
   display: grid;
   gap: 10px;
   width: 100% !important;
+}
+
+body.siase-v2-service-page .siase-v2-credit-accordion--split {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  column-gap: 16px;
+  align-items: start;
+}
+
+body.siase-v2-service-page .siase-v2-credit-list-heading,
+body.siase-v2-service-page .siase-v2-credit-list-heading.ui-accordion-header {
+  padding-block: 12px !important;
+  font-size: 12px !important;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+body.siase-v2-service-page .siase-v2-credit-list-panel {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.siase-v2-service-page .siase-v2-credit-detail-panel {
+  display: block !important;
 }
 
 body.siase-v2-service-page .siase-v2-credit-heading,
@@ -841,12 +1138,9 @@ body.siase-v2-service-page .siase-v2-credit-table td {
 }
 
 @media (max-width: 1024px) {
-  body.siase-v2-service-page .siase-v2-career-shell {
-    grid-template-columns: 224px minmax(0, 1fr);
-  }
-
-  body.siase-v2-service-page .siase-v2-career-shell__main {
-    padding: 32px;
+  body.siase-v2-service-page .siase-v2-career-shell__header {
+    gap: 16px;
+    padding: 0 16px;
   }
 }
 
@@ -856,41 +1150,37 @@ body.siase-v2-service-page .siase-v2-credit-table td {
   }
 
   body.siase-v2-service-page .siase-v2-career-shell {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100dvh;
+    min-height: 100dvh;
   }
 
   body.siase-v2-service-page .siase-v2-career-shell__header {
-    gap: 12px;
-    padding: 14px;
-  }
-
-  body.siase-v2-service-page .siase-v2-career-shell__header nav {
-    display: none;
-  }
-
-  body.siase-v2-service-page .siase-v2-career-sidebar {
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 12px 14px;
   }
 
-  body.siase-v2-service-page .siase-v2-career-sidebar > p {
-    margin-top: 14px;
+  body.siase-v2-service-page .siase-v2-career-shell__modules {
+    display: none;
   }
 
-  body.siase-v2-service-page .siase-v2-career-sidebar__choices {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  body.siase-v2-service-page .siase-v2-module-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    gap: 2px;
   }
 
-  body.siase-v2-service-page .siase-v2-career-shell__main {
-    padding: 24px 16px 32px;
+  body.siase-v2-service-page .siase-v2-module-tile {
+    padding: 20px !important;
+  }
+
+  body.siase-v2-service-page .siase-v2-career-shell[data-siase-view='careers'] .siase-v2-career-selector {
+    padding: 16px;
   }
 
   body.siase-v2-service-page .siase-v2-career-choices {
     grid-template-columns: 1fr;
-  }
-
-  body.siase-v2-service-page .siase-v2-career-announcement {
-    margin-top: 24px;
   }
 
   body.siase-v2-service-page .siase-v2-career-choice {
@@ -917,6 +1207,15 @@ body.siase-v2-service-page .siase-v2-credit-table td {
   body.siase-v2-service-page .siase-v2-credit-summary {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  body.siase-v2-service-page .siase-v2-credit-accordion--split {
+    grid-template-columns: 1fr;
+  }
+
+  body.siase-v2-service-page .siase-v2-credit-accordion--split > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
   }
 
   body.siase-v2-service-page .dataTables_wrapper .dataTables_filter input {
@@ -1216,7 +1515,14 @@ body.siase-v2-service-page .siase-v2-notification-quick-block button:hover > spa
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.siase-v2-service-page .siase-v2-career-choice {
+  body.siase-v2-service-page .siase-v2-career-choice,
+  body.siase-v2-service-page .siase-v2-module-tile-wrapper,
+  body.siase-v2-service-page .siase-v2-module-tile__surface,
+  body.siase-v2-service-page .siase-v2-module-tile__expand {
     transition: none;
+  }
+
+  body.siase-v2-service-page .siase-v2-module-tile-wrapper--siase.is-expanded .siase-v2-module-tile__expand {
+    animation: none;
   }
 }
