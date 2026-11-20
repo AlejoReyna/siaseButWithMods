@@ -40,6 +40,11 @@ describe('student status page', () => {
     enhanceStudentStatusPage(document);
 
     expect(document.querySelectorAll('#siase-v2-student-status')).toHaveLength(1);
+    const panels = document.querySelector('#siase-v2-student-status')!.children;
+    expect(Array.from(panels, (panel) => panel.firstElementChild?.textContent)).toEqual([
+      'Credencial virtual temporal',
+      'Datos escolares'
+    ]);
     expect(document.querySelector('.siase-v2-status-preview #idCredencial')).toBe(credential);
     expect(document.querySelector('.siase-v2-status-badge--positive')?.textContent).toBe('Sí');
     const download = document.querySelector<HTMLButtonElement>('[data-download]')!;

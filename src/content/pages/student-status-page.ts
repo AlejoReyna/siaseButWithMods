@@ -191,33 +191,25 @@ export function enhanceStudentStatusPage(frameDocument: Document): void {
   const shell = frameDocument.createElement('main');
   shell.id = 'siase-v2-student-status';
   shell.innerHTML = `
-    <div class="siase-v2-status-layout">
-      <header class="siase-v2-status-header">
-        <h1>Situación estudiantil</h1>
-        <p>Departamento Escolar y de Archivo · UANL</p>
-      </header>
-      <div class="siase-v2-status-grid">
-        <section class="siase-v2-status-panel" aria-labelledby="siase-v2-credential-title">
-          <h2 id="siase-v2-credential-title">Credencial virtual temporal</h2>
-          <div class="siase-v2-status-stage">
-            <div class="siase-v2-status-preview"></div>
-          </div>
-          <div class="siase-v2-status-actions">
-            <button type="button" class="siase-v2-status-download" data-download disabled>
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
-              <span>${downloadLabel}</span>
-            </button>
-            <button type="button" class="siase-v2-status-print" data-print>Imprimir</button>
-          </div>
-          <p class="siase-v2-status-feedback" role="status">${downloadHint}</p>
-        </section>
-        <section class="siase-v2-status-panel" aria-labelledby="siase-v2-school-title">
-          <h2 id="siase-v2-school-title">Datos escolares</h2>
-          <dl class="siase-v2-status-details"></dl>
-          <p class="siase-v2-status-note" hidden></p>
-        </section>
+    <section class="siase-v2-status-panel" aria-labelledby="siase-v2-credential-title">
+      <h1 id="siase-v2-credential-title">Credencial virtual temporal</h1>
+      <div class="siase-v2-status-stage">
+        <div class="siase-v2-status-preview"></div>
       </div>
-    </div>
+      <div class="siase-v2-status-actions">
+        <button type="button" class="siase-v2-status-download" data-download disabled>
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+          <span>${downloadLabel}</span>
+        </button>
+        <button type="button" class="siase-v2-status-print" data-print>Imprimir</button>
+      </div>
+      <p class="siase-v2-status-feedback" role="status">${downloadHint}</p>
+    </section>
+    <section class="siase-v2-status-panel" aria-labelledby="siase-v2-school-title">
+      <h2 id="siase-v2-school-title">Datos escolares</h2>
+      <dl class="siase-v2-status-details"></dl>
+      <p class="siase-v2-status-note" hidden></p>
+    </section>
   `;
   renderSchoolDetails(shell, details);
   frameDocument.body.append(shell);
