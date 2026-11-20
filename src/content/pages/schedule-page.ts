@@ -127,6 +127,69 @@ function currentPeriodLabel(frameDocument: Document): string {
   return bodyText.match(/Periodo\s*:\s*([^\n]+?)(?:Alumno|Carrera|Plan de Estudio|$)/i)?.[1]?.trim() ?? 'Periodo actual';
 }
 
+function hideConsultaHorarioHeading(mainContainer: HTMLElement): void {
+  mainContainer.querySelectorAll('h6').forEach((heading) => {
+    if (/consulta\s+de\s+horario/i.test(heading.textContent ?? '')) {
+      heading.classList.add('siase-v2-schedule-title--hidden');
+    }
+  });
+}
+
+function hideRegresarAction(frameDocument: Document): void {
+  const panel = frameDocument.querySelector<HTMLElement>('#id_rpPnlEst');
+  if (!panel) return;
+  panel.querySelectorAll<HTMLElement>('input[type="button"], button, .boton').forEach((control) => {
+    const label = (control.getAttribute('value') ?? control.textContent ?? '').trim();
+    if (/regresar/i.test(label)) control.classList.add('siase-v2-schedule-action--hidden');
+  });
+}
+
+function layoutScheduleColumns(mainContainer: HTMLElement): void {
+  if (mainContainer.querySelector('[data-siase-v2-schedule-layout]')) return;
+  const grid = mainContainer.querySelector<HTMLElement>('.siase-v2-schedule-grid');
+  if (!grid) return;
+
+  const doc = mainContainer.ownerDocument;
+  const layout = doc.createElement('div');
+  layout.className = 'siase-v2-schedule-layout';
+  layout.dataset.siaseV2ScheduleLayout = 'true';
+
+  const mainColumn = doc.createElement('div');
+  mainColumn.className = 'siase-v2-schedule-layout__main';
+
+  const asideColumn = doc.createElement('aside');
+  asideColumn.className = 'siase-v2-schedule-layout__aside';
+  asideColumn.setAttribute('aria-label', 'Detalle de materias');
+
+  grid.parentElement?.insertBefore(layout, grid);
+  mainColumn.append(grid);
+  mainContainer
+    .querySelectorAll<HTMLElement>('.siase-v2-schedule-catalog, .siase-v2-schedule-reference')
+    .forEach((table) => asideColumn.append(table));
+  layout.append(mainColumn, asideColumn);
+}
+
+function mountScheduleToolbar(
+  mainContainer: HTMLElement,
+  periodPanel: HTMLElement,
+  actionsPanel: HTMLElement | null
+): void {
+  if (mainContainer.querySelector('[data-siase-v2-schedule-toolbar]')) return;
+
+  const toolbar = mainContainer.ownerDocument.createElement('div');
+  toolbar.className = 'siase-v2-schedule-toolbar';
+  toolbar.dataset.siaseV2ScheduleToolbar = 'true';
+  toolbar.append(periodPanel);
+  if (actionsPanel) toolbar.append(actionsPanel);
+
+  const firstChild = mainContainer.firstElementChild;
+  if (firstChild && !firstChild.classList.contains('siase-v2-schedule-toolbar')) {
+    mainContainer.insertBefore(toolbar, firstChild.nextSibling);
+    return;
+  }
+  mainContainer.prepend(toolbar);
+}
+
 function enhanceSchedulePeriodSelector(frameDocument: Document, form: HTMLFormElement): void {
   const mainContainer = frameDocument.querySelector<HTMLElement>('#main-container');
   const options = getRememberedPeriodOptions(frameDocument);
@@ -157,7 +220,7 @@ function enhanceSchedulePeriodSelector(frameDocument: Document, form: HTMLFormEl
 
   const select = frameDocument.createElement('select');
   select.id = 'siase-v2-schedule-period-select';
-  select.className = 'siase-v2-schedule-period__select';
+  select.className = 'siase-v2-schedule-period__select siase-v2-query-period';
   select.name = 'HTMLPeriodo';
   periodOptions.forEach((option) => {
     const item = frameDocument.createElement('option');
@@ -181,7 +244,8 @@ function enhanceSchedulePeriodSelector(frameDocument: Document, form: HTMLFormEl
   hint.textContent = 'Cambia el periodo para consultar otro horario.';
   panel.append(copy, form, hint);
 
-  if (mainContainer?.parentElement) mainContainer.parentElement.insertBefore(panel, mainContainer);
+  const actionsPanel = frameDocument.querySelector<HTMLElement>('#id_rpPnlEst');
+  if (mainContainer) mountScheduleToolbar(mainContainer, panel, actionsPanel);
   else frameDocument.body.prepend(panel);
 }
 
@@ -190,10 +254,13 @@ function enhanceScheduleResult(frameDocument: Document, form: HTMLFormElement | 
   markScheduleTables(frameDocument);
   const mainContainer = frameDocument.querySelector<HTMLElement>('#main-container');
   mainContainer?.classList.add('siase-v2-schedule-surface');
+  if (mainContainer) hideConsultaHorarioHeading(mainContainer);
+  hideRegresarAction(frameDocument);
   frameDocument.querySelector<HTMLElement>('#id_rpPnlEst')?.classList.add('siase-v2-schedule-actions');
   if (form && !frameDocument.querySelector('[data-siase-v2-schedule-period]')) {
     enhanceSchedulePeriodSelector(frameDocument, form);
   }
+  if (mainContainer) layoutScheduleColumns(mainContainer);
 }
 
 export async function enhanceSchedulePage(frameDocument: Document): Promise<ScheduleSlot[]> {
