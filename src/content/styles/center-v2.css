@@ -2054,18 +2054,37 @@ body.siase-v2-schedule-page * {
   box-sizing: border-box;
 }
 
-body.siase-v2-schedule-page .siase-v2-schedule-period {
-  display: grid;
-  grid-template-columns: minmax(170px, 0.7fr) minmax(260px, 1.4fr) auto;
+body.siase-v2-schedule-page .siase-v2-schedule-title--hidden,
+body.siase-v2-schedule-page .siase-v2-schedule-action--hidden {
+  display: none !important;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-toolbar {
+  display: flex;
+  flex-wrap: wrap;
   align-items: end;
-  gap: 14px 20px;
-  width: min(100%, 1180px);
-  margin: 0 auto 16px;
-  padding: 14px 16px;
-  background: #fff;
+  justify-content: space-between;
+  gap: 12px 18px;
+  margin: 0 0 16px;
+  padding: clamp(14px, 2.5vw, 18px) clamp(16px, 3vw, 22px);
+  background: #f1f4f8;
   border: 1px solid #dbe3ed;
-  border-radius: 13px;
-  box-shadow: 0 8px 24px rgba(34, 56, 84, 0.07);
+  border-radius: 12px;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-toolbar .siase-v2-schedule-period {
+  display: flex;
+  flex: 1 1 320px;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 body.siase-v2-schedule-page .siase-v2-schedule-period__copy {
@@ -2115,10 +2134,24 @@ body.siase-v2-schedule-page .siase-v2-schedule-period__select:focus {
 }
 
 body.siase-v2-schedule-page .siase-v2-schedule-period__hint {
-  align-self: center;
+  flex: 1 1 100%;
   color: #718096;
   font-size: 11px;
   line-height: 1.35;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-toolbar .siase-v2-schedule-period__select,
+body.siase-v2-schedule-page .siase-v2-schedule-toolbar .siase-v2-query-period {
+  flex: 1 1 260px;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid #cfd6e1;
+  border-radius: 9px;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-toolbar .siase-v2-schedule-actions {
+  flex: 0 0 auto;
+  margin: 0;
 }
 
 body.siase-v2-schedule-page .siase-v2-schedule-surface {
@@ -2152,15 +2185,28 @@ body.siase-v2-schedule-page .siase-v2-schedule-surface h6 {
   text-align: left;
 }
 
-body.siase-v2-schedule-page .siase-v2-schedule-surface h6:first-of-type {
-  margin-top: 10px;
+body.siase-v2-schedule-page .siase-v2-schedule-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.95fr);
+  gap: clamp(16px, 2.5vw, 28px);
+  align-items: start;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-layout__main {
+  min-width: 0;
+}
+
+body.siase-v2-schedule-page .siase-v2-schedule-layout__aside {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
 }
 
 body.siase-v2-schedule-page .siase-v2-schedule-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin: 0 0 8px;
+  margin: 0;
   text-align: right;
 }
 
@@ -2252,9 +2298,15 @@ body.siase-v2-schedule-page .siase-v2-schedule-reference td {
   border: 1px solid #e2e9f0;
 }
 
-@media (max-width: 720px) {
-  body.siase-v2-schedule-page .siase-v2-schedule-period {
+@media (max-width: 960px) {
+  body.siase-v2-schedule-page .siase-v2-schedule-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  body.siase-v2-schedule-page .siase-v2-schedule-toolbar {
+    flex-direction: column;
     align-items: stretch;
   }
 

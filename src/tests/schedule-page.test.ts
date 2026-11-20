@@ -38,7 +38,13 @@ describe('schedule page flow', () => {
     document.body.innerHTML = parsed.body.innerHTML;
     document.body.insertAdjacentHTML(
       'beforeend',
-      '<form name="mi_forma"><input type="hidden" name="HTMLPeriodo" value="latest"></form>'
+      `
+        <form name="mi_forma"><input type="hidden" name="HTMLPeriodo" value="latest"></form>
+        <div id="id_rpPnlEst">
+          <input type="button" class="boton" value="Regresar" />
+          <input type="button" class="boton" value="Imprimir" />
+        </div>
+      `
     );
     sessionStorage.setItem(
       'siase-plus-schedule-periods',
@@ -52,9 +58,14 @@ describe('schedule page flow', () => {
 
     const selector = document.querySelector<HTMLSelectElement>('[data-siase-v2-schedule-period] select');
     expect(document.querySelector('[data-siase-v2-schedule-period]')).not.toBeNull();
+    expect(document.querySelector('[data-siase-v2-schedule-toolbar]')).not.toBeNull();
     expect(selector?.value).toBe('latest');
     expect(selector?.options).toHaveLength(2);
     expect(document.querySelector('.siase-v2-schedule-grid')).not.toBeNull();
+    expect(document.querySelector('[data-siase-v2-schedule-layout]')).not.toBeNull();
+    expect(document.querySelector('h6.siase-v2-schedule-title--hidden')).not.toBeNull();
+    expect(document.querySelector('#id_rpPnlEst input[value="Regresar"]')?.classList.contains('siase-v2-schedule-action--hidden')).toBe(true);
+    expect(document.querySelector('#id_rpPnlEst input[value="Imprimir"]')?.classList.contains('siase-v2-schedule-action--hidden')).toBe(false);
     expect(document.body.classList.contains('siase-v2-schedule-page')).toBe(true);
     expect(isScheduleResultDocument(document)).toBe(true);
   });
